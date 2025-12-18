@@ -1,5 +1,11 @@
 package com.mini.domain;
 
-public class Member {
+import java.util.Date;
 
+public class Member {
+	private String id;
+	private String password;
+	private String username;
+	private Date regidate;
+	private Long tpcnt;
 }
