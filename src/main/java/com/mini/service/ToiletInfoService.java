@@ -18,4 +18,8 @@ public class ToiletInfoService {
 	public List<ToiletInfo> getAllInfo() {
 		return tInfoRepo.findAll();
 	}
+	
+	public ToiletInfo getInfoById(String data_cd) {
+		return tInfoRepo.findById(data_cd).get();
+	}
 }

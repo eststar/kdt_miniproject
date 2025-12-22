@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 
 import org.hibernate.annotations.Immutable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.ToString;
 public class ToiletInfo {
 	
 	@Id
+	@Column(name = "data_cd")
 	private String dataCd;	//text //데이터코드
 	private OffsetDateTime regDt;	//timestamp with time zone // 등록일시
 	private Double laCrdnt;	//double precision // 위도좌표
