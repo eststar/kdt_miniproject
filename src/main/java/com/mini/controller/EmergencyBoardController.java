@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController("/api/test/review")
+@RestController("/api/test/emergencyboard")
 @RequiredArgsConstructor
-public class ReviewController {
-	@GetMapping("/getreview")
-	public ResponseEntity<?> getReview(){
+public class EmergencyBoardController {
+	@GetMapping("/getboard")
+	public ResponseEntity<?> getBoard(){
 		return null;
 	}
 }

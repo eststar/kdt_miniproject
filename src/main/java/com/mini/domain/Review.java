@@ -21,16 +21,16 @@ import lombok.ToString;
 @Builder
 @Entity
 public class Review {
-	@Id
-	private String reviewId;
-	private OffsetDateTime createDate;
-	private Long viewCnt;
-	private String content;
-	@ManyToOne
+	@Id                                   
+	private String reviewId; // 리뷰ID             
+	private OffsetDateTime createDate; //작성시간
+	private Long viewCnt; //   조회수                
+	private String content; //리뷰내용               
+	@ManyToOne                            
 	@JoinColumn(name = "data_cd")
-	private String dataCd;
+	private String dataCd; //리뷰작성한 화장실 정보
 	@ManyToOne
 	@JoinColumn(name = "member_id")
-	private String memberId;
-	private Integer point;
+	private String memberId; //리뷰 작성한 멤버정보
+	private Integer point; //평점
 }

@@ -23,10 +23,10 @@ import lombok.ToString;
 public class Member {
 	@Id
 	@Column(name = "member_id")
-	private String 	memberId;
-	private Date 	createDate;
-	private Long 	tpCnt;
-	private String 	password;
-	private Role	role;
-	private String 	username;	
+	private String 	memberId;    //아이디
+	private Date 	createDate;  //생성일
+	private Long 	tpCnt;       //휴지배달개수
+	private String 	password;    //비밀번호
+	private Role	role;        //권한
+	private String 	username;	 //이름
 }

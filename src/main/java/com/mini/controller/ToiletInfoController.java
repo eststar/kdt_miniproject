@@ -11,8 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mini.domain.ToiletInfo;
 import com.mini.service.ToiletInfoService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+@Data
+class ToiletFilter {
+	private String 	dataCd;
+	private Double 	laCrdnt;
+	private Double 	loCrdnt;
+	private Integer pageNum = 0;
+	private Integer pageSize = 10;
+}
 @RestController
 @RequestMapping("/api/test/toiletinfo")
 @RequiredArgsConstructor
@@ -25,7 +34,7 @@ public class ToiletInfoController {
 	}
 	
 	@GetMapping("/getinfo")
-	public ResponseEntity<?> getInfo(ToiletInfo tInfo){
+	public ResponseEntity<?> getInfo(ToiletFilter tInfo){
 		if(tInfo == null)
 			return ResponseEntity.ok(tInfoService.getAllInfo());
 		else {

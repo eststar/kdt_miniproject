@@ -23,14 +23,14 @@ import lombok.ToString;
 
 public class EmergencyBoard {
 	@Id
-	private Long boardId;
-	private OffsetDateTime createDate;
-	private String title;
-	private String content;
-	@ManyToOne
-	@JoinColumn(name = "data_cd")
-	private String dataCd;
+	private Long boardId;               // 게시글ID
+	private OffsetDateTime createDate;  // 작성시간
+	private String title;               // 제목
+	private String content;             // 내용
+	@ManyToOne                          
+	@JoinColumn(name = "data_cd")       
+	private String dataCd;				// 작성한 화장실정보(위치)
 	@ManyToOne
 	@JoinColumn(name = "member_id")
-	private String memberId;
+	private String memberId;			// 작성한 멤버정보
 }
