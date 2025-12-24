@@ -2,6 +2,8 @@ package com.mini.config.filter;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mini.domain.Member;
+import com.mini.util.JWTUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,13 +48,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		User user = (User)authResult.getPrincipal();
+		
+		System.out.println("[JWTAuthFilter] " + user);
+		String token = JWTUtil.getJWT(user.getUsername());//user 이름으로 토큰 생성
+		
+		response.addHeader(HttpHeaders.AUTHORIZATION, token);
+		response.setStatus(HttpStatus.OK.value());
 	}
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		super.unsuccessfulAuthentication(request, response, failed);
+		System.out.println("unsuccessAuth" + failed);
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 	}
 	
 	

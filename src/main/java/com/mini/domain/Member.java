@@ -28,5 +28,6 @@ public class Member {
 	private Long 	tpCnt;       //휴지배달개수
 	private String 	password;    //비밀번호
 	private Role	role;        //권한
-	private String 	username;	 //이름
+	private String 	nickname;	 //이름
+	private Provider provider;   //로그인방식
 }
