@@ -23,8 +23,7 @@ import lombok.ToString;
 @Entity
 public class Reviews {
 	@Id
-	@Column(columnDefinition = "TEXT")
-	private String reviewId; // 리뷰ID             
+	private Long reviewId; // 리뷰ID             
 	private OffsetDateTime createDate; //작성시간
 	private Long viewCnt; //   조회수
 	@Column(columnDefinition = "TEXT")

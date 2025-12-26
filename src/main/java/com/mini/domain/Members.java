@@ -5,6 +5,8 @@ import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,11 +28,14 @@ public class Members {
 	@Column(name = "member_id", columnDefinition = "TEXT")
 	private String 	memberId;    //아이디
 	private OffsetDateTime 	createDate;  //생성일
-	private Long 	tpCnt;       //휴지배달개수
+	@Builder.Default
+	private Long 	tpCnt = 0L;       //휴지배달개수
 	@Column(columnDefinition = "TEXT")
 	private String 	password;    //비밀번호
+	@Enumerated(EnumType.STRING)
 	private Role	role;        //권한
 	@Column(columnDefinition = "TEXT")
 	private String 	nickname;	 //이름
+	@Enumerated(EnumType.STRING)
 	private Provider provider;   //로그인방식
 }

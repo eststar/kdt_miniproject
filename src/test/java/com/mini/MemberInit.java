@@ -3,6 +3,7 @@ package com.mini;
 import java.time.OffsetDateTime;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,12 +13,10 @@ import com.mini.domain.Provider;
 import com.mini.domain.Role;
 import com.mini.persistence.MemberRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @SpringBootTest
-@RequiredArgsConstructor
 public class MemberInit{
-	private final MemberRepository memRepo;
+	@Autowired
+	private MemberRepository memRepo;
 	private PasswordEncoder encoder = new BCryptPasswordEncoder();
 	
 	@Test
