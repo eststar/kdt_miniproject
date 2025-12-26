@@ -13,7 +13,8 @@ public class ToiletUserDetails extends User{
 	private final Provider provider;
 	@Getter
 	private final String nickname;
-	public ToiletUserDetails(Member member) {
+	
+	public ToiletUserDetails(Members member) {
 		super(member.getMemberId(), member.getPassword(), 
 				AuthorityUtils.createAuthorityList(member.getRole().toString()));
 		provider = member.getProvider();

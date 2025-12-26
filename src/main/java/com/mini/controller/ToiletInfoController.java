@@ -27,10 +27,10 @@ class ToiletFilter {
 public class ToiletInfoController {
 	private final ToiletInfoService tInfoService;
 	
-	@GetMapping("/getinfo")
-	public List<ToiletInfo> getAllInfo(){
-		return tInfoService.getAllInfo();
-	}
+//	@GetMapping("/getinfo")
+//	public List<ToiletInfo> getAllInfo(){
+//		return tInfoService.getAllInfo();
+//	}
 	
 	@GetMapping("/getinfo")
 	public ResponseEntity<?> getInfo(ToiletFilter tInfo){

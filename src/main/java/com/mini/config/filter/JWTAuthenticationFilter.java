@@ -1,6 +1,7 @@
 package com.mini.config.filter;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,11 +9,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mini.domain.Member;
+import com.mini.domain.Members;
+import com.mini.domain.ToiletUserDetails;
 import com.mini.util.JWTUtil;
 
 import jakarta.servlet.FilterChain;
@@ -30,9 +33,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		ObjectMapper mapper = new ObjectMapper();
-		Member member = null;
+		Members member = null;
 		try {
-			member = mapper.readValue(request.getInputStream(), Member.class);
+			member = mapper.readValue(request.getInputStream(), Members.class);
 		} catch (IOException e) {
 			return null;
 		}
@@ -41,16 +44,25 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			return null;
 		
 		Authentication authToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword());
-		return authenticationManager.authenticate(authToken);
+		return authenticationManager.authenticate(authToken); //SecurityUserDetailsService 의 loadUserByUsername
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		User user = (User)authResult.getPrincipal();
+		ToiletUserDetails user = (ToiletUserDetails)authResult.getPrincipal();
 		
 		System.out.println("[JWTAuthFilter] " + user);
-		String token = JWTUtil.getJWT(user.getUsername());//user 이름으로 토큰 생성
+		
+		Collection<? extends GrantedAuthority> authorites = user.getAuthorities();
+		String role = "";
+		for(GrantedAuthority authority : authorites) {
+			role = authority.toString();
+			break;
+		}
+		
+		//멤버 emailID, provider, role 정보 넣어서 JWT 토큰 생성
+		String token = JWTUtil.getJWT(user.getUsername(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
 		response.addHeader(HttpHeaders.AUTHORIZATION, token);
 		response.setStatus(HttpStatus.OK.value());
