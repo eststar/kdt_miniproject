@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.mini.domain.Members;
-import com.mini.domain.ToiletUserDetails;
+import com.mini.domain.SecurityUser;
 import com.mini.persistence.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class SecurityUserDetailsService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Members member = memRepo.findById(username).orElseThrow(()->new UsernameNotFoundException(username + " Not Found!"));
 		
-		return new ToiletUserDetails(member);
+		return new SecurityUser(member);
 	}
 	
 }

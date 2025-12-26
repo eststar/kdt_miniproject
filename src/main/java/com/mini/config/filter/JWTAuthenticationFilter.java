@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mini.domain.Members;
-import com.mini.domain.ToiletUserDetails;
+import com.mini.domain.SecurityUser;
 import com.mini.util.JWTUtil;
 
 import jakarta.servlet.FilterChain;
@@ -50,7 +50,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		ToiletUserDetails user = (ToiletUserDetails)authResult.getPrincipal();
+		SecurityUser user = (SecurityUser)authResult.getPrincipal();
 		
 		System.out.println("[JWTAuthFilter] " + user);
 		

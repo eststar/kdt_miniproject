@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.User;
 
 import lombok.Getter;
 
-public class ToiletUserDetails extends User{
+public class SecurityUser extends User{
 	private static final long serialVersionUID = 1L;
 	
 	@Getter
@@ -14,7 +14,7 @@ public class ToiletUserDetails extends User{
 	@Getter
 	private final String nickname;
 	
-	public ToiletUserDetails(Members member) {
+	public SecurityUser(Members member) {
 		super(member.getMemberId(), member.getPassword(), 
 				AuthorityUtils.createAuthorityList(member.getRole().toString()));
 		provider = member.getProvider();
