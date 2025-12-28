@@ -14,6 +14,7 @@ import com.mini.service.MemberService;
 import com.mini.util.JWTUtil;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +51,16 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 			email = (String)((Map<String, String>)oAuth2User.getAttribute("response")).get("email");
 		
 		return Map.of("provider", provider, "email", email);
+	}
+	
+	void sendJWTtoClient(HttpServletResponse response, String token) throws IOException{
+		Cookie cookie = new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));
+		cookie.setHttpOnly(true);
+		cookie.setSecure(false);
+		cookie.setPath("/");
+		cookie.setMaxAge(60);
+		response.addCookie(cookie);
+		
+		response.sendRedirect("");
 	}
 }
