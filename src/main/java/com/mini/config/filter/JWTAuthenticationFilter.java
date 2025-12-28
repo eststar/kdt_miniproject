@@ -10,12 +10,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mini.domain.Members;
 import com.mini.domain.SecurityUser;
+import com.mini.dto.MemberDTO;
 import com.mini.util.JWTUtil;
 
 import jakarta.servlet.FilterChain;
@@ -33,9 +32,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		ObjectMapper mapper = new ObjectMapper();
-		Members member = null;
+		MemberDTO member = null;
 		try {
-			member = mapper.readValue(request.getInputStream(), Members.class);
+			member = mapper.readValue(request.getInputStream(), MemberDTO.class);
 		} catch (IOException e) {
 			return null;
 		}
@@ -43,7 +42,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		if(member == null)
 			return null;
 		
-		Authentication authToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword());
+		Authentication authToken = new UsernamePasswordAuthenticationToken(member.getUsername(), member.getPassword());
 		return authenticationManager.authenticate(authToken); //SecurityUserDetailsService 의 loadUserByUsername
 	}
 

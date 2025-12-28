@@ -38,4 +38,5 @@ public class Members {
 	private String 	nickname;	 //이름
 	@Enumerated(EnumType.STRING)
 	private Provider provider;   //로그인방식
+	private Boolean enabled;
 }
