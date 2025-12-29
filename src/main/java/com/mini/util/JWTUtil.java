@@ -11,7 +11,7 @@ public class JWTUtil {
 	private static final String JWT_KEY = "toiletMiniProject";
 	
 	public static final String prefix ="Bearer ";
-	public static final String memberidClaim = "username";
+	public static final String memberidClaim = "memberId";
 	public static final String providerClaim = "provider";
 	public static final String roleClaim = "role";
 	
@@ -22,8 +22,8 @@ public class JWTUtil {
 	}
 	
 	//JWT를 만들 때 호출 with DB
-		public static String getJWT(String username) {
-			String src = JWT.create().withClaim(memberidClaim, username)
+		public static String getJWT(String memberId) {
+			String src = JWT.create().withClaim(memberidClaim, memberId)
 									.withExpiresAt(new Date(System.currentTimeMillis()+ACCESS_TOKEN_MSEC))
 									.sign(Algorithm.HMAC256(JWT_KEY));
 			return prefix + src;

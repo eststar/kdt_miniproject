@@ -17,15 +17,15 @@
 				 body: JSON.stringify({ username, password })
 			});
 			if (response.ok) {
-				const jwtToken = response.headers.get('Authorization');
-				if (jwtToken) {
-					sessionStorage.setItem('jwtToken', jwtToken);
+// 				const jwtToken = response.headers.get('Authorization');
+// 				if (jwtToken) {
+// 					sessionStorage.setItem('jwtToken', jwtToken);
 					alert("로그인성공!");
 // 					window.location.href= "./welcome.html"; 
-					return;
-				}
-				else 
-					alert("로그인실패![토큰생성실패]");
+// 					return;
+// 				}
+// 				else 
+// 					alert("로그인실패![토큰생성실패]");
 			}
 			else
 				alert("로그인 실패!");

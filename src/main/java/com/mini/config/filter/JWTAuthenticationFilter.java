@@ -60,7 +60,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		}
 		
 		//멤버 memberid(provider_username으로 만든 PK정보), provider, role 정보 넣어서 JWT 토큰 생성
-		String token = JWTUtil.getJWT(user.getUsername(), user.getProvider().name(), role);//user 이름으로 토큰 생성
+		String token = JWTUtil.getJWT(user.getMemberId(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
 //		response.addHeader(HttpHeaders.AUTHORIZATION, token);
 		Cookie jwtCookie = new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));

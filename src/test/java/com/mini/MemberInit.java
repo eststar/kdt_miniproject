@@ -22,11 +22,11 @@ public class MemberInit{
 	@Test
 	public void testInsert() {
 		//테스트용 어드민 계정 생성
-		String username = "adminToiletInfo";
+		String username = "admin";
 		
 		memRepo.save(Members.builder().memberId("LOCAL_"+username)
 										.username(username)
-										.password(encoder.encode("kdt202503toilet"))
+										.password(encoder.encode("test1234"))
 										.createDate(OffsetDateTime.now()).role(Role.ROLE_ADMIN)
 										.nickname("ADMINTest01").provider(Provider.LOCAL)
 										.enabled(true)

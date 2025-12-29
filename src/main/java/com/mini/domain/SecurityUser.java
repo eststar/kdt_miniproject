@@ -14,25 +14,20 @@ public class SecurityUser extends User{
 	
 	@Override
 	public Collection<GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
 		return super.getAuthorities();
 	}
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
 		return super.getPassword();
 	}
 
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
+	public String getMemberId() {
 		return super.getUsername();
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return super.isEnabled();
 	}
 

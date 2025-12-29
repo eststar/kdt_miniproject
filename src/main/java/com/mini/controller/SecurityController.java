@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SecurityController {
-//	@GetMapping("/login_page")
+	
+//	@GetMapping("/login")
 //	public String login_page() {
 //		return "login_page";
 //	}
