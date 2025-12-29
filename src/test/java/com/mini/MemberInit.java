@@ -22,9 +22,14 @@ public class MemberInit{
 	@Test
 	public void testInsert() {
 		//테스트용 어드민 계정 생성
-		memRepo.save(Members.builder().memberId("adminToiletInfo").password(encoder.encode("kdt202503toilet"))
+		String username = "adminToiletInfo";
+		
+		memRepo.save(Members.builder().memberId("LOCAL_"+username)
+										.username(username)
+										.password(encoder.encode("kdt202503toilet"))
 										.createDate(OffsetDateTime.now()).role(Role.ROLE_ADMIN)
-										.nickname("ADMINTest01").provider(Provider.LOCAL) 
+										.nickname("ADMINTest01").provider(Provider.LOCAL)
+										.enabled(true)
 										.build());
 	}
 }

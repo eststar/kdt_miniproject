@@ -19,6 +19,7 @@ import com.mini.util.JWTUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,21 +51,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		SecurityUser user = (SecurityUser)authResult.getPrincipal();
-		
-		System.out.println("[JWTAuthFilter] " + user);
-		
+				
 		Collection<? extends GrantedAuthority> authorites = user.getAuthorities();
-		String role = "";
+		String role = "LOCAL";
 		for(GrantedAuthority authority : authorites) {
 			role = authority.toString();
 			break;
 		}
 		
-		//멤버 emailID, provider, role 정보 넣어서 JWT 토큰 생성
+		//멤버 memberid(provider_username으로 만든 PK정보), provider, role 정보 넣어서 JWT 토큰 생성
 		String token = JWTUtil.getJWT(user.getUsername(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
-		response.addHeader(HttpHeaders.AUTHORIZATION, token);
+//		response.addHeader(HttpHeaders.AUTHORIZATION, token);
+		Cookie jwtCookie = new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));
+		jwtCookie.setHttpOnly(true);
+		jwtCookie.setSecure(false);
+		jwtCookie.setPath("/");
+		jwtCookie.setMaxAge(60*60);
+		response.addCookie(jwtCookie);
+		
 		response.setStatus(HttpStatus.OK.value());
+		System.out.println("success:[JWTAuthFilter] " + user);
 	}
 
 	@Override

@@ -29,9 +29,10 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		Map<String, String> map = getUserInfo(authentication);
-		String username = map.get("provider") + "_" + map.get("email");
-		
-		memService.save(username, map.get("provider"));
+		String username = map.get("email");
+		String memberID = map.get("provider") + "_" + username;		
+		String oauth2pass = "OAUTH2_USER";
+		memService.save(memberID, username, map.get("provider"), oauth2pass);
 		
 		String token = JWTUtil.getJWT(username);
 		response.addHeader(HttpHeaders.AUTHORIZATION, token);
@@ -58,9 +59,9 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		cookie.setHttpOnly(true);
 		cookie.setSecure(false);
 		cookie.setPath("/");
-		cookie.setMaxAge(60);
+		cookie.setMaxAge(60*60);
 		response.addCookie(cookie);
 		
-		response.sendRedirect("");
+		response.sendRedirect("https://webfront-ashen.vercel.app/main");
 	}
 }

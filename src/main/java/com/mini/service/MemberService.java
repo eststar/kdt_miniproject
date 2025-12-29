@@ -2,6 +2,8 @@ package com.mini.service;
 
 import java.time.OffsetDateTime;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mini.domain.Members;
@@ -15,13 +17,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
 	private final MemberRepository memRepo;
+	private PasswordEncoder encoder = new BCryptPasswordEncoder();
 	
-	public void save(String username, String provider) {
+	public void save(String memeberID, String username, String provider, String password) {
 		if(memRepo.existsById(username))
 			return;
+		
 		memRepo.save(Members.builder()
-							.memberId(username)
-							.password("****")
+							.memberId(memeberID)
+							.username(username)
+							.password(encoder.encode(password))
 							.role(Role.ROLE_MEMBER)
 							.enabled(true)
 							.provider(Provider.findByString(provider))
