@@ -2,22 +2,28 @@ package com.mini.dto;
 
 import java.time.OffsetDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.Role;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class MemberDTO {
 	private String username;//이메일 또는 단어형식 id
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
 	private String 			memberId;    //provider_username
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 	private OffsetDateTime 	createDate;  //생성일
 	@Builder.Default
 	private Long 			tpCnt = 0L;       //휴지배달개수

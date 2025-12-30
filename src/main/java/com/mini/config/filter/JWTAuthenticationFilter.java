@@ -36,6 +36,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		ObjectMapper mapper = new ObjectMapper();
 		MemberDTO member = null;
 		try {
+			System.out.println("데이터 읽기 시작");
 			member = mapper.readValue(request.getInputStream(), MemberDTO.class);
 		} catch (IOException e) {
 			return null;

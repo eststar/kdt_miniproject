@@ -34,11 +34,11 @@ public class Members {
 	private String 			password;    //5비밀번호
 	@Enumerated(EnumType.STRING)
 	private Role			role;        //6권한
-	@Column(columnDefinition = "TEXT")
+	@Column(columnDefinition = "TEXT", unique = true)
 	private String 	nickname;	 		//7닉네임
 	@Enumerated(EnumType.STRING)
 	private Provider 		provider;   //8로그인방식
-	@Column(columnDefinition = "TEXT")
+	@Column(columnDefinition = "TEXT", unique = true)
 	private String 			username;	//9이메일 또는 유저id
 	private Boolean 		enabled;	//10활성화여부
 }

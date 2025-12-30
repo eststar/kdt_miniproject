@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -21,6 +22,8 @@ import com.mini.config.filter.JWTAuthenticationFilter;
 import com.mini.config.filter.JWTAuthorizationFilter;
 import com.mini.persistence.MemberRepository;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -50,6 +53,7 @@ public class SecurityConfig {
 		http.addFilterBefore(new JWTAuthorizationFilter(memRepo), AuthorizationFilter.class);
 		http.addFilter(new JWTAuthenticationFilter(authenticationConfig.getAuthenticationManager()));
 		http.oauth2Login(oauth2->oauth2.successHandler(oauth2SuccessHandler));
+		http.logout(logout->logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler()));
 		return http.build();
 	}
 	
@@ -63,5 +67,18 @@ public class SecurityConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);
 		return source;
+	}
+	
+	private LogoutSuccessHandler logoutSuccessHandler() {
+		return (request, response, authentication)->{
+			Cookie cookie = new Cookie("jwtToken", null);
+			cookie.setHttpOnly(true); //
+			cookie.setPath("/");
+			cookie.setMaxAge(0); //cookie 유효시간
+			response.addCookie(cookie);
+			
+			response.setStatus(HttpServletResponse.SC_OK);
+			System.out.println("=== 로그아웃 처리 완료 (200 OK) ===");
+		};
 	}
 }
