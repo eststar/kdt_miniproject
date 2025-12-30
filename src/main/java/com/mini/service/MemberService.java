@@ -20,7 +20,7 @@ public class MemberService {
 	private PasswordEncoder encoder = new BCryptPasswordEncoder();
 	
 	public void save(String memeberID, String username, String provider, String password) {
-		if(memRepo.existsById(username))
+		if(memRepo.existsById(memeberID))
 			return;
 		
 		memRepo.save(Members.builder()

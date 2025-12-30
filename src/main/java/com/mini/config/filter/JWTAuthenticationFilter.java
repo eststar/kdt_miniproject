@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mini.domain.Provider;
 import com.mini.domain.SecurityUser;
 import com.mini.dto.MemberDTO;
 import com.mini.util.JWTUtil;
@@ -43,7 +44,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		if(member == null)
 			return null;
 		
-		Authentication authToken = new UsernamePasswordAuthenticationToken(member.getUsername(), member.getPassword());
+		String memberId = Provider.LOCAL.toString() + "_" + member.getUsername();		
+		Authentication authToken = new UsernamePasswordAuthenticationToken(memberId, member.getPassword()); //loadUserByUsername에서 해당하는 데이터를 memberID가 아니라 username으로 찾으므로 username 전달
 		return authenticationManager.authenticate(authToken); //SecurityUserDetailsService 의 loadUserByUsername
 	}
 
@@ -63,11 +65,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = JWTUtil.getJWT(user.getMemberId(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
 //		response.addHeader(HttpHeaders.AUTHORIZATION, token);
+		//response header에 json을 보내는 대신 쿠키 전달
 		Cookie jwtCookie = new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));
-		jwtCookie.setHttpOnly(true);
-		jwtCookie.setSecure(false);
+		jwtCookie.setHttpOnly(true); //
+		jwtCookie.setSecure(false); //http, https 둘다 가능
 		jwtCookie.setPath("/");
-		jwtCookie.setMaxAge(60*60);
+		jwtCookie.setMaxAge(60*60); //cookie 유효시간
 		response.addCookie(jwtCookie);
 		
 		response.setStatus(HttpStatus.OK.value());
