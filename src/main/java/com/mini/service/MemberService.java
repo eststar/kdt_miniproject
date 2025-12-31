@@ -10,6 +10,7 @@ import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.Role;
 import com.mini.dto.MemberDTO;
+import com.mini.exception.UsernameDuplicateException;
 import com.mini.persistence.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class MemberService {
 	}
 	
 	public void signUp(MemberDTO member) {
-//		memRepo.existByUsername(member.getUsername()).
+		if(memRepo.existsByUsername(member.getUsername()))
+			throw new UsernameDuplicateException();
 	}
 }
