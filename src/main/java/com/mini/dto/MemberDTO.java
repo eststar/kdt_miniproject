@@ -34,6 +34,7 @@ public class MemberDTO {
 	
 	public static MemberDTO fromMemberEntity(Members member) {
 		return MemberDTO.builder()
+				.memberId(member.getMemberId())
 				.nickname(member.getNickname())
 				.username(member.getUsername())
 				.createDate(member.getCreateDate())

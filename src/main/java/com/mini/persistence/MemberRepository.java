@@ -9,4 +9,6 @@ import com.mini.domain.Provider;
 
 public interface MemberRepository extends JpaRepository<Members, String>{
 	Optional<Members> findByUsernameAndProvider(String username, Provider provider);
+	Boolean existsByUsername(String username);
+	Boolean existsByNickname(String nickname);
 }

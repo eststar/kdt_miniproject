@@ -1,9 +1,14 @@
 package com.mini.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,4 +33,12 @@ public class MemberController {
 		MemberDTO responseDTO = MemberDTO.fromMemberEntity(member);		
 		return ResponseEntity.ok(responseDTO);
 	}
+	
+//	@PostMapping("/signup") //로컬db 회원가입 username, password, nickname 만 전달됨
+//	public ResponseEntity<?> signUp(@RequestBody MemberDTO member){
+//		
+//		Map<String, Object> response = new HashMap<>();
+//		
+//		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//	}
 }

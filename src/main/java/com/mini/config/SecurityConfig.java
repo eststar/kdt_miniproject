@@ -41,11 +41,11 @@ public class SecurityConfig {
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-		http.cors(cors->cors.configurationSource(corsSource()));
-		http.csrf(csrf->csrf.disable());
-		http.httpBasic(basic->basic.disable());
-		http.formLogin(formLogin->formLogin.disable());
-		http.authorizeHttpRequests(auth->auth.requestMatchers("/login_page/**", "/login/**").permitAll()
+		http.cors(cors->cors.configurationSource(corsSource())); //CORS 설정
+		http.csrf(csrf->csrf.disable()); //csrf설정
+		http.httpBasic(basic->basic.disable()); //authentication header 저장 ID:PW 사용하지 않는 방식으로
+		http.formLogin(formLogin->formLogin.disable()); //UsernamePasswordAuthenticationFilter 사용안함-JWTAuthenticationFilter가 대체
+		http.authorizeHttpRequests(auth->auth.requestMatchers("/login_page/**", "/login/**", "/logout").permitAll()
 							.anyRequest().permitAll());
 		
 		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -57,6 +57,7 @@ public class SecurityConfig {
 		return http.build();
 	}
 	
+	//CORS 설정 
 	private CorsConfigurationSource corsSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://127.0.0.1:3000", "http://10.125.121.182:3000", "https://10.125.121.182:3000"));

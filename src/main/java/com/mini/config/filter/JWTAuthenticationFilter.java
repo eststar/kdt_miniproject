@@ -36,7 +36,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		ObjectMapper mapper = new ObjectMapper();
 		MemberDTO member = null;
 		try {
-			System.out.println("데이터 읽기 시작");
+			
 			member = mapper.readValue(request.getInputStream(), MemberDTO.class);
 		} catch (IOException e) {
 			return null;
@@ -65,7 +65,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		//멤버 memberid(provider_username으로 만든 PK정보), provider, role 정보 넣어서 JWT 토큰 생성
 		String token = JWTUtil.getJWT(user.getMemberId(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
-//		response.addHeader(HttpHeaders.AUTHORIZATION, token);
 		//response header에 json을 보내는 대신 쿠키 전달
 		Cookie jwtCookie = new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));
 		jwtCookie.setHttpOnly(true); //
