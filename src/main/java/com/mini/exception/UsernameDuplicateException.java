@@ -8,7 +8,5 @@ public class UsernameDuplicateException extends MemberException{
 
 	public UsernameDuplicateException() {
 		super(MemberErrorCode.DUPLICATE_USERNAME);
-	}
-
-	
+	}	
 }

@@ -44,4 +44,5 @@ public class MemberDTO {
 				.enabled(member.getEnabled())
 				.build();
 	}
+	
 }

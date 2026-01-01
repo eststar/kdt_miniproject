@@ -10,6 +10,7 @@ import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.Role;
 import com.mini.dto.MemberDTO;
+import com.mini.exception.NicknameDuplicateException;
 import com.mini.exception.UsernameDuplicateException;
 import com.mini.persistence.MemberRepository;
 
@@ -37,8 +38,24 @@ public class MemberService {
 							.build());
 	}
 	
-	public void signUp(MemberDTO member) {
+	public MemberDTO signUp(MemberDTO member) {
 		if(memRepo.existsByUsername(member.getUsername()))
 			throw new UsernameDuplicateException();
+		if(memRepo.existsByNickname(member.getNickname()))
+			throw new NicknameDuplicateException();
+		
+		String memberId = member.getProvider() + "_"+ member.getUsername();
+		Members success = memRepo.save(Members.builder()
+				.memberId(memberId)
+				.username(member.getUsername())
+				.password(encoder.encode(member.getPassword()))
+				.role(Role.ROLE_MEMBER)
+				.enabled(true)
+				.provider(member.getProvider())
+				.createDate(OffsetDateTime.now())
+				.nickname(member.getNickname())
+				.build());
+		
+		return MemberDTO.builder().username(success.getUsername()).nickname(success.getNickname()).build();
 	}
 }

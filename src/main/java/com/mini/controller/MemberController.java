@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mini.domain.Members;
+import com.mini.domain.Provider;
 import com.mini.domain.SecurityUser;
 import com.mini.dto.MemberDTO;
 import com.mini.service.MemberService;
@@ -23,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
-//	private final MemberService memService;
+	private final MemberService memService;
 	
 	@GetMapping("/myinfo")
 	public ResponseEntity<?> getMember(@AuthenticationPrincipal SecurityUser secureUser){
@@ -34,11 +35,15 @@ public class MemberController {
 		return ResponseEntity.ok(responseDTO);
 	}
 	
-//	@PostMapping("/signup") //로컬db 회원가입 username, password, nickname 만 전달됨
-//	public ResponseEntity<?> signUp(@RequestBody MemberDTO member){
-//		
+	@PostMapping("/signup") //로컬db 회원가입 username, password, nickname 만 전달됨
+	public ResponseEntity<?> signUp(@RequestBody MemberDTO member){
+		member.setProvider(Provider.LOCAL);
+		
+		MemberDTO success = memService.signUp(member);
+		
 //		Map<String, Object> response = new HashMap<>();
-//		
-//		return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//	}
+//		response.put("username", response)
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(success);
+	}
 }
