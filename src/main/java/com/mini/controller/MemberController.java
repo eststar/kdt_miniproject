@@ -1,8 +1,5 @@
 package com.mini.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,9 +37,6 @@ public class MemberController {
 		member.setProvider(Provider.LOCAL);
 		
 		MemberDTO success = memService.signUp(member);
-		
-//		Map<String, Object> response = new HashMap<>();
-//		response.put("username", response)
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(success);
 	}

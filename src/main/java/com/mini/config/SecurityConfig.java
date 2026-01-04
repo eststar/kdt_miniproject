@@ -74,6 +74,7 @@ public class SecurityConfig {
 		return (request, response, authentication)->{
 			Cookie cookie = new Cookie("jwtToken", null);
 			cookie.setHttpOnly(true); //
+			cookie.setSecure(false);
 			cookie.setPath("/");
 			cookie.setMaxAge(0); //cookie 유효시간
 			response.addCookie(cookie);
