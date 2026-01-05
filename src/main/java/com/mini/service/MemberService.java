@@ -1,10 +1,12 @@
 package com.mini.service;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mini.domain.Members;
 import com.mini.domain.Provider;
@@ -22,20 +24,23 @@ public class MemberService {
 	private final MemberRepository memRepo;
 	private PasswordEncoder encoder = new BCryptPasswordEncoder();
 	
-	public void save(String memeberID, String username, String provider, String password) {
-		if(memRepo.existsById(memeberID))
-			return;
-		
-		memRepo.save(Members.builder()
-							.memberId(memeberID)
-							.username(username)
-							.password(encoder.encode(password))
-							.role(Role.ROLE_MEMBER)
-							.enabled(true)
-							.provider(Provider.findByString(provider))
-							.createDate(OffsetDateTime.now())
-							.nickname("")
-							.build());
+	@Transactional
+	public MemberDTO save(String memeberID, String username, String provider, String password, String nickname) {
+		String encodedPass = encoder.encode(password);
+		Members member = memRepo.findById(memeberID)
+								.map(mem->{mem.setNickname(nickname); return mem;})
+								.orElseGet(()->memRepo.save(Members.builder()
+											.memberId(memeberID)
+											.username(username)
+											.password(encodedPass)
+											.role(Role.ROLE_MEMBER)
+											.enabled(true)
+											.provider(Provider.findByString(provider))
+											.createDate(OffsetDateTime.now())
+											.nickname(nickname)
+											.build())
+											);
+		return MemberDTO.builder().memberId(member.getMemberId()).build();
 	}
 	
 	public MemberDTO signUp(MemberDTO member) {
@@ -57,5 +62,13 @@ public class MemberService {
 				.build());
 		
 		return MemberDTO.builder().username(success.getUsername()).nickname(success.getNickname()).build();
+	}
+	
+	public Boolean isAlreadySignedUp(String memberId){
+		return memRepo.existsById(memberId);		
+	}
+	
+	public Optional<Members> findByMemberId(String memberId){
+		return memRepo.findById(memberId);
 	}
 }

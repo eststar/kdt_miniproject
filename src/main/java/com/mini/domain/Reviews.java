@@ -25,7 +25,6 @@ public class Reviews {
 	@Id
 	private Long reviewId; // 리뷰ID             
 	private OffsetDateTime createDate; //작성시간
-	private Long viewCnt; //   조회수
 	@Column(columnDefinition = "TEXT")
 	private String content; //리뷰내용               
 	@ManyToOne                            
