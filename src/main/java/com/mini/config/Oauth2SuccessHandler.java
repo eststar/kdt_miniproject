@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -45,8 +43,6 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		String token = JWTUtil.getJWT(memdto.getMemberId());
 		Cookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*30);
 		response.addCookie(cookie);
-//		response.setStatus(HttpStatus.OK.value());
-//		response.addHeader(HttpHeaders.AUTHORIZATION, token);
 		response.sendRedirect(frontUrl);
 	}
 	
@@ -71,16 +67,4 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		return Map.of("provider", provider, "email", email, "nickname", nickname);
 	}
 	
-//	void sendJWTtoClient(HttpServletResponse response, String token) throws IOException{
-//		Cookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60); 
-//				
-////				new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));
-////		cookie.setHttpOnly(true);
-////		cookie.setSecure(false);
-////		cookie.setPath("/");
-////		cookie.setMaxAge(60*60);
-//		response.addCookie(cookie);
-//		
-////		response.sendRedirect("https://webfront-ashen.vercel.app/main");
-//	}
 }
