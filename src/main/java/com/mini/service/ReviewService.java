@@ -15,6 +15,7 @@ public class ReviewService {
 	private final ReviewRepository reviewRepo;
 	
 	public List<Reviews> getAllWithToiletinfoAndMember(String toiletinfo){
+		
 		return null;
 	}
 }
