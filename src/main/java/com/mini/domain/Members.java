@@ -27,7 +27,9 @@ public class Members {
 	@Id
 	@Column(name = "member_id", columnDefinition = "TEXT")
 	private String 			memberId;    //2provider_username
-	private OffsetDateTime 	createDate;  //3생성일
+	@Builder.Default
+	@Column(columnDefinition = "TIMESTAMPTZ DEFAULT NOW()")
+	private OffsetDateTime 	createDate = OffsetDateTime.now();  //3생성일
 	@Builder.Default
 	private Long 			tpCnt = 0L;  //4휴지배달개수
 	@Column(columnDefinition = "TEXT")

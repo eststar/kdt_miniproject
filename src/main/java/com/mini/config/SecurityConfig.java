@@ -53,12 +53,7 @@ public class SecurityConfig {
 		
 		http.addFilterBefore(new JWTAuthorizationFilter(memRepo), AuthorizationFilter.class); //인가처리 필터
 		http.addFilter(new JWTAuthenticationFilter(authenticationConfig.getAuthenticationManager())); //인증처리 필터
-		http.oauth2Login(oauth2->oauth2.successHandler(oauth2SuccessHandler)
-										.failureHandler((req, resp, exception)->{
-											System.out.println("실패원인: " + exception.getMessage());
-											exception.printStackTrace();
-										})
-				);
+		http.oauth2Login(oauth2->oauth2.successHandler(oauth2SuccessHandler));
 		http.logout(logout->logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler())); //로그아웃 처리
 		return http.build();
 	}

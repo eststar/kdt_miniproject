@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -22,18 +24,18 @@ import lombok.ToString;
 @Builder
 @Entity
 
-public class EmergencyBoard {
+public class Board {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long boardId;               // 게시글ID
-	private OffsetDateTime createDate;  // 작성시간
+	@Builder.Default
+	@Column(columnDefinition = "TIMESTAMPTZ DEFAULT NOW()")
+	private OffsetDateTime createDate = OffsetDateTime.now();  // 작성시간
 	@Column(columnDefinition = "TEXT")
 	private String title;               // 제목
 	@Column(columnDefinition = "TEXT")
 	private String content;             // 내용
-	@ManyToOne                          
-	@JoinColumn(name = "data_cd")       
-	private ToiletInfo dataCd;				// 작성한 화장실정보(위치)
 	@ManyToOne
 	@JoinColumn(name = "member_id")
-	private Members memberId;			// 작성한 멤버정보
+	private Members member;			// 작성한 멤버정보
 }

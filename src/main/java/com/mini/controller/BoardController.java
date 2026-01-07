@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController("/api/test/emergencyboard")
+@RestController("/api/test/board")
 @RequiredArgsConstructor
-public class EmergencyBoardController {
+public class BoardController {
 	@GetMapping("/getboard")
 	public ResponseEntity<?> getBoard(){
 		return null;

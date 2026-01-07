@@ -66,13 +66,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = JWTUtil.getJWT(user.getMemberId(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
 		//response header에 json을 보내는 대신 쿠키 전달
-		Cookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60); 
+		Cookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60); //1시간
 				
-//				new Cookie("jwtToken", token.replace(JWTUtil.prefix, ""));
-//		jwtCookie.setHttpOnly(true); //
-//		jwtCookie.setSecure(false); //http, https 둘다 가능
-//		jwtCookie.setPath("/");
-//		jwtCookie.setMaxAge(60*60); //cookie 유효시간
 		response.addCookie(jwtCookie);
 		
 		response.setStatus(HttpStatus.OK.value());
@@ -82,7 +77,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-		System.out.println("unsuccessAuth" + failed);
+		System.out.println("[unsuccessAuth]" + failed);
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 	}
 	

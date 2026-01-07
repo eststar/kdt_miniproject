@@ -1,9 +1,11 @@
 package com.mini.domain;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,15 +25,18 @@ import lombok.ToString;
 @Entity
 public class Reviews {
 	@Id
-	private Long reviewId; // 리뷰ID             
-	private OffsetDateTime createDate; //작성시간
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long 			reviewId; 	// 리뷰ID
+	@Builder.Default
+	@Column(columnDefinition = "DATE DEFAULT CURRENT_DATE")
+	private LocalDate 	createDate = LocalDate.now(); //작성시간
 	@Column(columnDefinition = "TEXT")
-	private String content; //리뷰내용               
+	private String 			content; 	//리뷰내용               
 	@ManyToOne                            
 	@JoinColumn(name = "data_cd")
-	private ToiletInfo dataCd; //리뷰작성한 화장실 정보
+	private ToiletInfo		toiletinfo; 	//리뷰작성한 화장실 정보
 	@ManyToOne
 	@JoinColumn(name = "member_id")
-	private Members memberId; //리뷰 작성한 멤버정보
-	private Integer point; //평점
+	private Members 		member; 	//리뷰 작성한 멤버정보
+	private Integer 		point; 		//평점
 }

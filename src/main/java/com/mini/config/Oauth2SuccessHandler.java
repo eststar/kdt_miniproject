@@ -27,7 +27,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	private final MemberService memService;
 	
 	@Value("${app.frontend.url}")
-	private String frontUrl;
+	private String successUrl;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -38,12 +38,12 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		String nickname = map.get("nickname");
 		String oauth2pass = "OAUTH2_USER";
 		MemberDTO memdto = memService.save(memberId, username, map.get("provider").toUpperCase(), oauth2pass, nickname);
-		System.out.println("멤버Id:"+ memdto.getMemberId());
 		
 		String token = JWTUtil.getJWT(memdto.getMemberId());
 		Cookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*30);
 		response.addCookie(cookie);
-		response.sendRedirect(frontUrl);
+//		response.sendRedirect(frontUrl);
+		getRedirectStrategy().sendRedirect(request, response, successUrl);
 	}
 	
 //	@SuppressWarnings("unchecked")
