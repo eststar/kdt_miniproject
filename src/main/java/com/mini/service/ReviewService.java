@@ -47,15 +47,16 @@ public class ReviewService {
 			throw new IllegalArgumentException("Invalid topBottom value: " + reqdto.getTopBottom());
 	}
 	
+	//멤버 로그인 상태에서만 가능하도록 해야함
 	public void postReview(ReviewDTO reviewDTO) {
 		ToiletInfo targetToilet = toiletRepo.getReferenceById(reviewDTO.getDataCd());
 		Members targetMember = memRepo.getReferenceById(reviewDTO.getMember().getMemberId());
-		Reviews.builder()
-			.content(reviewDTO.getContent())
-			.toiletinfo(targetToilet)
-			.point(reviewDTO.getPoint())
-			.member(targetMember)
-			.build();
-		reviewRepo.save(null);
+		
+		reviewRepo.save(Reviews.builder()
+				.content(reviewDTO.getContent())
+				.toiletinfo(targetToilet)
+				.point(reviewDTO.getPoint())
+				.member(targetMember)
+				.build());
 	}
 }
