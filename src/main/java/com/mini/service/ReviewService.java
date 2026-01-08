@@ -6,11 +6,15 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.mini.domain.Members;
 import com.mini.domain.Reviews;
+import com.mini.domain.ToiletInfo;
 import com.mini.dto.AveragePointDTO;
 import com.mini.dto.ReviewDTO;
 import com.mini.dto.ReviewReqDTO;
+import com.mini.persistence.MemberRepository;
 import com.mini.persistence.ReviewRepository;
+import com.mini.persistence.ToiletInfoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +22,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewService {
 	private final ReviewRepository reviewRepo;
+	private final ToiletInfoRepository toiletRepo;
+	private final MemberRepository memRepo;
+	
 	
 	public List<ReviewDTO> getAllWithMember(String dataCd){
 		List<Reviews> reviewList = reviewRepo.getAllWithMember(dataCd);
@@ -38,5 +45,17 @@ public class ReviewService {
 			return reviewRepo.getAveragePointBottomFive(PageRequest.of(0, 5));
 		else
 			throw new IllegalArgumentException("Invalid topBottom value: " + reqdto.getTopBottom());
+	}
+	
+	public void postReview(ReviewDTO reviewDTO) {
+		ToiletInfo targetToilet = toiletRepo.getReferenceById(reviewDTO.getDataCd());
+		Members targetMember = memRepo.getReferenceById(reviewDTO.getMember().getMemberId());
+		Reviews.builder()
+			.content(reviewDTO.getContent())
+			.toiletinfo(targetToilet)
+			.point(reviewDTO.getPoint())
+			.member(targetMember)
+			.build();
+		reviewRepo.save(null);
 	}
 }

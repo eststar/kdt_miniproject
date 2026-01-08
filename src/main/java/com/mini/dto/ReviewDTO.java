@@ -20,6 +20,7 @@ public class ReviewDTO {
 	private MemberRespDTO 	member; 	//리뷰 작성한 멤버정보
 	private Integer 		point; 		//평점
 	
+	private String 			dataCd;		//화장실 정보
 	public static ReviewDTO fromReviewEntity(Reviews review) {
 		return ReviewDTO.builder()
 						.reviewId(review.getReviewId())

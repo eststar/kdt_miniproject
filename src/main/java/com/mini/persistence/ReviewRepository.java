@@ -12,12 +12,14 @@ import com.mini.dto.AveragePointDTO;
 
 public interface ReviewRepository extends JpaRepository<Reviews, Long>{
 	
-	@Query("SELECT r FROM Reviews r JOIN FETCH r.member WHERE r.toiletinfo.dataCd = :dataCd")
+	@Query("SELECT r FROM Reviews r JOIN FETCH r.member WHERE r.toiletinfo.dataCd = :dataCd ORDER BY r.createDate DESC ")
 	List<Reviews> getAllWithMember(@Param("dataCd")String dataCd);
 	
 	@Query("SELECT new com.mini.dto.AveragePointDTO(t.toiletNm, ROUND(AVG(COALESCE(r.point, 1.0)), 1), COUNT(r)) " 
 			+ " FROM Reviews r JOIN r.toiletinfo t "
-			+ " GROUP BY t.dataCd, t.toiletNm ORDER BY AVG(COALESCE(r.point, 1.0)) DESC "
+			+ " GROUP BY t.dataCd, t.toiletNm "
+			+ " HAVING COUNT(r) >= 3 "
+			+ " ORDER BY AVG(COALESCE(r.point, 1.0)) DESC "
 			+ " LIMIT 5 ")
 	List<AveragePointDTO> getAveragePointTopFive(Pageable limit);
 	
