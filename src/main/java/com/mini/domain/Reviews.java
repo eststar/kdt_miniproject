@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,11 +33,11 @@ public class Reviews {
 	private LocalDate 	createDate = LocalDate.now(); //작성시간
 	@Column(columnDefinition = "TEXT")
 	private String 			content; 	//리뷰내용               
-	@ManyToOne                            
-	@JoinColumn(name = "data_cd")
+	@ManyToOne(fetch = FetchType.LAZY)                            
+	@JoinColumn(name = "data_cd", nullable = false)
 	private ToiletInfo		toiletinfo; 	//리뷰작성한 화장실 정보
-	@ManyToOne
-	@JoinColumn(name = "member_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id", nullable = false)
 	private Members 		member; 	//리뷰 작성한 멤버정보
 	private Integer 		point; 		//평점
 }
