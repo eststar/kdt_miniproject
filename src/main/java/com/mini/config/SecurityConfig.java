@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.mini.config.filter.JWTAuthenticationFilter;
 import com.mini.config.filter.JWTAuthorizationFilter;
+import com.mini.domain.Role;
 import com.mini.persistence.MemberRepository;
 import com.mini.util.JWTUtil;
 
@@ -46,7 +48,8 @@ public class SecurityConfig {
 		http.csrf(csrf->csrf.disable()); //csrf설정
 		http.httpBasic(basic->basic.disable()); //authentication header 저장 ID:PW 사용하지 않는 방식으로
 		http.formLogin(formLogin->formLogin.disable()); //UsernamePasswordAuthenticationFilter 사용안함-JWTAuthenticationFilter가 대체
-		http.authorizeHttpRequests(auth->auth.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
+		http.authorizeHttpRequests(auth->auth.requestMatchers(HttpMethod.POST, "/api/test/review/postreview").hasAnyRole("MEMBER", "ADMIN")
+										.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
 							.anyRequest().permitAll()); //현재 임시로 전체 가능하게
 		
 		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

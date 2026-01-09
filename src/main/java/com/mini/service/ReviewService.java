@@ -10,12 +10,15 @@ import com.mini.domain.Members;
 import com.mini.domain.Reviews;
 import com.mini.domain.ToiletInfo;
 import com.mini.dto.AveragePointDTO;
+import com.mini.dto.MemberDTO;
 import com.mini.dto.ReviewDTO;
+import com.mini.dto.ReviewPostDTO;
 import com.mini.dto.ReviewReqDTO;
 import com.mini.persistence.MemberRepository;
 import com.mini.persistence.ReviewRepository;
 import com.mini.persistence.ToiletInfoRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -48,15 +51,17 @@ public class ReviewService {
 	}
 	
 	//멤버 로그인 상태에서만 가능하도록 해야함
-	public void postReview(ReviewDTO reviewDTO) {
-		ToiletInfo targetToilet = toiletRepo.getReferenceById(reviewDTO.getDataCd());
-		Members targetMember = memRepo.getReferenceById(reviewDTO.getMember().getMemberId());
+	public ReviewDTO postReview(ReviewPostDTO reviewPost, MemberDTO memberdto) {
+		ToiletInfo targetToilet = toiletRepo.findById(reviewPost.getDataCd()).orElseThrow(()->new EntityNotFoundException("해당 화장실 정보를 찾을 수 없습니다."));
+		Members targetMember = memRepo.getReferenceById(memberdto.getMemberId());
 		
-		reviewRepo.save(Reviews.builder()
-				.content(reviewDTO.getContent())
+		Reviews targetR = reviewRepo.save(Reviews.builder()
+				.content(reviewPost.getContent())
 				.toiletinfo(targetToilet)
-				.point(reviewDTO.getPoint())
+				.point(reviewPost.getPoint())
 				.member(targetMember)
 				.build());
+		
+		return ReviewDTO.fromReviewEntity(targetR);
 	}
 }
