@@ -1,5 +1,6 @@
 package com.mini.config;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
@@ -9,23 +10,29 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mini.config.filter.JWTAuthenticationFilter;
 import com.mini.config.filter.JWTAuthorizationFilter;
+import com.mini.domain.AuthErrorCode;
 import com.mini.domain.Role;
+import com.mini.dto.ErrorRespDTO;
 import com.mini.persistence.MemberRepository;
 import com.mini.util.JWTUtil;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +65,7 @@ public class SecurityConfig {
 		http.addFilter(new JWTAuthenticationFilter(authenticationConfig.getAuthenticationManager())); //인증처리 필터
 		http.oauth2Login(oauth2->oauth2.successHandler(oauth2SuccessHandler));
 		http.logout(logout->logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler())); //로그아웃 처리
+		http.exceptionHandling(conf->conf.authenticationEntryPoint((request, response, authException)->authFailHandler(request, response, authException)));
 		return http.build();
 	}
 	
@@ -79,15 +87,18 @@ public class SecurityConfig {
 		return (request, response, authentication)->{
 			Cookie cookie = JWTUtil.makeJWTTokenCookie(null, 0); //cookie 유효시간 0으로
 					
-//					new Cookie("jwtToken", null);
-//			cookie.setHttpOnly(true); //
-//			cookie.setSecure(false);
-//			cookie.setPath("/");
-//			cookie.setMaxAge(0); //cookie 유효시간 0으로
 			response.addCookie(cookie);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("=== 로그아웃 처리 완료 (200 OK) ===");
 		};
+	}
+	
+	private void authFailHandler(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException{
+		AuthErrorCode errorCode = AuthErrorCode.LOGIN_REQUIRED;
+		resp.setStatus(errorCode.getHttpStatus().value());
+		resp.setContentType("application/json;charset=UTF-8");
+		new ObjectMapper().writeValue(resp.getWriter(), ErrorRespDTO.of(errorCode));
+		
 	}
 }

@@ -16,9 +16,13 @@ import lombok.RequiredArgsConstructor;
 public class Oauth2FailureHandler extends SimpleUrlAuthenticationFailureHandler{@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		String targetUrl = "https://10.125.121.182:3000/login";
+		String targetURL = request.getHeader("Referer");
+		String defaultURL = "https://10.125.121.182:3000/login";
+		if(targetURL == null || targetURL.isEmpty())
+			targetURL = defaultURL;
+		
 		System.out.println("Oauth2 로그인 실패: " + exception.getMessage());
-		getRedirectStrategy().sendRedirect(request, response, targetUrl);
+		getRedirectStrategy().sendRedirect(request, response, targetURL);
 	}
 	
 }
