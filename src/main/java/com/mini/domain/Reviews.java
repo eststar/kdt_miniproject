@@ -40,4 +40,9 @@ public class Reviews {
 	@JoinColumn(name = "member_id", nullable = false)
 	private Members 		member; 	//리뷰 작성한 멤버정보
 	private Integer 		point; 		//평점
+	
+	public void changeContent(String content, Integer point) {
+		this.content = content;
+		this.point = point;
+	}
 }

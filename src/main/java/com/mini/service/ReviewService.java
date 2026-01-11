@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mini.domain.Members;
 import com.mini.domain.Reviews;
@@ -69,5 +70,16 @@ public class ReviewService {
 				.build());
 		
 		return ReviewDTO.fromReviewEntity(targetR);
+	}
+	
+	@Transactional
+	public ReviewDTO updateReview(ReviewPostDTO reviewUpdate, MemberDTO memberdto) {
+		Reviews targetReview = reviewRepo.findById(reviewUpdate.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
+		
+		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()))
+			throw new RuntimeException("본인의 리뷰만 수정가능");
+		
+		targetReview.changeContent(reviewUpdate.getContent(), reviewUpdate.getPoint());
+		return ReviewDTO.fromReviewEntity(targetReview);
 	}
 }
