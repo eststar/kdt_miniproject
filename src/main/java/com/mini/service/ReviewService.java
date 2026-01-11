@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import com.mini.domain.Members;
 import com.mini.domain.Reviews;
+import com.mini.domain.SecurityUser;
 import com.mini.domain.ToiletInfo;
 import com.mini.dto.AveragePointDTO;
 import com.mini.dto.MemberDTO;
@@ -29,9 +31,13 @@ public class ReviewService {
 	private final MemberRepository memRepo;
 	
 	
-	public List<ReviewDTO> getAllWithMember(String dataCd){
-		List<Reviews> reviewList = reviewRepo.getAllWithMember(dataCd);
+	public List<ReviewDTO> getAllWithMember(ReviewReqDTO reviewReq, SecurityUser userInfo){
+		List<Reviews> reviewList = new ArrayList<>();
 		List<ReviewDTO> dtoList = new ArrayList<>();
+		if(userInfo == null)
+			reviewList = reviewRepo.getAllWithMember(reviewReq.getDataCd());
+		else
+			reviewList = reviewRepo.getAllWithMemberMyReviewFirst(reviewReq.getDataCd(), userInfo.getMemberId());
 		
 		for(Reviews r : reviewList) {
 			dtoList.add(ReviewDTO.fromReviewEntity(r));

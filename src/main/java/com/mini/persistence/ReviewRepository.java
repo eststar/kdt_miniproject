@@ -16,6 +16,11 @@ public interface ReviewRepository extends JpaRepository<Reviews, Long>{
 	@Query("SELECT r FROM Reviews r JOIN FETCH r.member WHERE r.toiletinfo.dataCd = :dataCd ORDER BY r.createDate DESC ")
 	List<Reviews> getAllWithMember(@Param("dataCd")String dataCd);
 	
+	//로그인 상태이면 본인 리뷰 최상단
+	@Query("SELECT r FROM Reviews r JOIN FETCH r.member WHERE r.toiletinfo.dataCd = :dataCd " 
+			+ " ORDER BY CASE WHEN r.member.memberId =:myId THEN 0 ELSE 1 END, r.createDate DESC ")
+	List<Reviews> getAllWithMemberMyReviewFirst(@Param("dataCd")String dataCd, @Param("myId")String myId);
+	
 	//리뷰 평균 상위 5
 	@Query("SELECT new com.mini.dto.AveragePointDTO(t.toiletNm, ROUND(AVG(COALESCE(r.point, 1.0)), 1), COUNT(r)) " 
 			+ " FROM Reviews r JOIN r.toiletinfo t "

@@ -25,9 +25,8 @@ public class ReviewController {
 	private final ReviewService reviewService;
 	
 	@GetMapping("/getreview")
-	public ResponseEntity<?> getAllWithToiletinfoAndMember(@ModelAttribute ReviewReqDTO reviewReq){
-		
-		return ResponseEntity.ok(reviewService.getAllWithMember(reviewReq.getDataCd()));
+	public ResponseEntity<?> getAllWithToiletinfoAndMember(@ModelAttribute ReviewReqDTO reviewReq, @AuthenticationPrincipal SecurityUser userInfo){
+		return ResponseEntity.ok(reviewService.getAllWithMember(reviewReq, userInfo));
 	}
 	
 	@GetMapping("/getreviewstat")
