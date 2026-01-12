@@ -50,7 +50,7 @@ public class ReviewController {
 	}
 	
 	@DeleteMapping("/deletereview")
-	public ResponseEntity<?> deleteReview(@RequestBody ReviewPostDTO reviewDelete, @AuthenticationPrincipal SecurityUser userInfo){
+	public ResponseEntity<?> deleteReview(@ModelAttribute ReviewPostDTO reviewDelete, @AuthenticationPrincipal SecurityUser userInfo){
 		return ResponseEntity.status(HttpStatus.OK).body(Map.of("reviewId", reviewService.deleteReview(reviewDelete, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
 	}
 }

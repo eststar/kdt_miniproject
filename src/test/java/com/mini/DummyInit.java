@@ -20,12 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mini.domain.Board;
 import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.Reviews;
 import com.mini.domain.Role;
 import com.mini.domain.ToiletInfo;
 import com.mini.dto.MemberDTO;
+import com.mini.persistence.BoardRepository;
 import com.mini.persistence.MemberRepository;
 import com.mini.persistence.ReviewRepository;
 import com.mini.persistence.ToiletInfoRepository;
@@ -33,6 +35,8 @@ import com.mini.persistence.ToiletInfoRepository;
 @SpringBootTest
 //@Transactional
 public class DummyInit{
+	@Autowired
+	private BoardRepository bRepo;
 	@Autowired
 	private MemberRepository memRepo;
 	@Autowired
@@ -89,7 +93,7 @@ public class DummyInit{
 		}
 	}
 	
-	@Test
+//	@Test
 	void loadExternalReviewJson() {
 		try {
 			File file = new File("C:/workspace/testdata/review.json");
@@ -149,6 +153,38 @@ public class DummyInit{
 //					return;
 			}
 //			Members owner = memRepo.findByNickname(nickname);
+		} catch (Exception e) {
+			System.err.println("파일을 찾을 수 없거나 읽기 오류: " + e.getMessage());
+            e.printStackTrace();
+		}
+	}
+	
+	@Test
+	void loadExternalBoardJson() {
+		try {
+			File file = new File("C:/workspace/testdata/board.json");
+			List<Map<String, Object>> dataList = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
+//			
+			for(Map<String, Object> map : dataList) {
+				Members member = memRepo.getReferenceById((String)map.get("member_id"));
+				if(member == null)
+					continue;
+				String title = (String)map.get("title");
+				String content = (String)map.get("content");
+//				String date = (String)map.get("date");
+//				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+//				LocalDate createDate = LocalDate.parse(date, formatter);
+				
+				OffsetDateTime createDate = OffsetDateTime.parse((String)map.get("create_date"));
+				
+				Board board = Board.builder()
+										.createDate(createDate)
+										.title(title)
+										.content(content)
+										.member(member)
+										.build();
+				bRepo.save(board);
+			}
 		} catch (Exception e) {
 			System.err.println("파일을 찾을 수 없거나 읽기 오류: " + e.getMessage());
             e.printStackTrace();

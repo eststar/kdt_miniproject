@@ -39,4 +39,9 @@ public class Board {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Members member;			// 작성한 멤버정보
+	
+	public void changeContent(String content, String title) {
+		this.content = content == null ? this.content : content;
+		this.title = title == null ? this.title : title;
+	}
 }

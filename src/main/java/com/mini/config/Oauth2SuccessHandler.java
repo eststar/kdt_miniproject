@@ -40,7 +40,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		MemberDTO memdto = memService.save(memberId, username, map.get("provider").toUpperCase(), oauth2pass, nickname);
 		
 		String token = JWTUtil.getJWT(memdto.getMemberId());
-		Cookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*30);
+		Cookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
 		response.addCookie(cookie);
 //		response.sendRedirect(frontUrl);
 		getRedirectStrategy().sendRedirect(request, response, successUrl);

@@ -66,7 +66,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = JWTUtil.getJWT(user.getMemberId(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
 		//response header에 json을 보내는 대신 쿠키 전달
-		Cookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60); //1시간
+		Cookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12); //1시간
 				
 		response.addCookie(jwtCookie);
 		
