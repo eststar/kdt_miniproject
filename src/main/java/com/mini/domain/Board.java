@@ -1,7 +1,9 @@
 package com.mini.domain;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +22,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "commentList")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -39,6 +42,8 @@ public class Board {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Members member;			// 작성한 멤버정보
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> commentList;
 	
 	public void changeContent(String content, String title) {
 		this.content = content == null ? this.content : content;
