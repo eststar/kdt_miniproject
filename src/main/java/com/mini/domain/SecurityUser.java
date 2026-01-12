@@ -1,6 +1,9 @@
 package com.mini.domain;
 
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 
@@ -24,5 +27,18 @@ public class SecurityUser extends User{
 		super(member.getMemberId(), member.getPassword(), 
 				AuthorityUtils.createAuthorityList(member.getRole().toString()));
 		this.member = member;
-	}		
+	}
+	
+	public Boolean isAdmin() {
+		Collection<? extends GrantedAuthority> authorities = this.getAuthorities();
+		if(authorities == null)
+			return false;
+		
+		for(GrantedAuthority auth : authorities) {
+			if(auth.getAuthority().equals(Role.ROLE_ADMIN.name()))
+				return true;
+		}
+		
+		return false;
+	}
 }

@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,7 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mini.config.filter.JWTAuthenticationFilter;
 import com.mini.config.filter.JWTAuthorizationFilter;
 import com.mini.domain.AuthErrorCode;
-import com.mini.domain.Role;
 import com.mini.dto.ErrorRespDTO;
 import com.mini.persistence.MemberRepository;
 import com.mini.util.JWTUtil;
@@ -49,13 +49,20 @@ public class SecurityConfig {
 	private final AuthenticationSuccessHandler oauth2SuccessHandler;
 	private final MemberRepository memRepo;
 	
+	private static final String[] AUTH_LIST = {
+			"/api/test/review/postreview", "/api/test/review/putreview", "/api/test/review/deletereview"
+	};
+	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http.cors(cors->cors.configurationSource(corsSource())); //CORS 설정
 		http.csrf(csrf->csrf.disable()); //csrf설정
 		http.httpBasic(basic->basic.disable()); //authentication header 저장 ID:PW 사용하지 않는 방식으로
 		http.formLogin(formLogin->formLogin.disable()); //UsernamePasswordAuthenticationFilter 사용안함-JWTAuthenticationFilter가 대체
-		http.authorizeHttpRequests(auth->auth.requestMatchers(HttpMethod.POST, "/api/test/review/postreview").hasAnyRole("MEMBER", "ADMIN")
+		
+		
+		http.authorizeHttpRequests(auth->auth
+										.requestMatchers(AUTH_LIST).hasAnyRole("MEMBER", "ADMIN")										
 										.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
 							.anyRequest().permitAll()); //현재 임시로 전체 가능하게
 		
@@ -95,10 +102,17 @@ public class SecurityConfig {
 	}
 	
 	private void authFailHandler(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException{
-		AuthErrorCode errorCode = AuthErrorCode.LOGIN_REQUIRED;
-		resp.setStatus(errorCode.getHttpStatus().value());
-		resp.setContentType("application/json;charset=UTF-8");
-		new ObjectMapper().writeValue(resp.getWriter(), ErrorRespDTO.of(errorCode));
+//		AuthErrorCode errorCode = AuthErrorCode.LOGIN_REQUIRED;
+//		resp.setStatus(errorCode.getHttpStatus().value());
+//		resp.setContentType("application/json;charset=UTF-8");
+//		new ObjectMapper().writeValue(resp.getWriter(), ErrorRespDTO.of(errorCode));
+		resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Login_Required");
 		
 	}
+	
+	@Bean
+	static RoleHierarchy roleHierarchy() {
+		return RoleHierarchyImpl.withDefaultRolePrefix().role("ADMIN").implies("MEMBER").build();
+	}
+	
 }

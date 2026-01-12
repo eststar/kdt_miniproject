@@ -73,13 +73,24 @@ public class ReviewService {
 	}
 	
 	@Transactional
-	public ReviewDTO updateReview(ReviewPostDTO reviewUpdate, MemberDTO memberdto) {
+	public ReviewDTO updateReview(ReviewPostDTO reviewUpdate, MemberDTO memberdto, Boolean isAdmin) {
 		Reviews targetReview = reviewRepo.findById(reviewUpdate.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
 		
-		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()))
-			throw new RuntimeException("본인의 리뷰만 수정가능");
+		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
+			throw new RuntimeException("수정 권한 없음");
 		
 		targetReview.changeContent(reviewUpdate.getContent(), reviewUpdate.getPoint());
 		return ReviewDTO.fromReviewEntity(targetReview);
+	}
+	
+	@Transactional
+	public Long deleteReview(ReviewPostDTO reviewDelete, MemberDTO memberdto, Boolean isAdmin) {
+		Reviews targetReview = reviewRepo.findById(reviewDelete.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
+		Long reviewId = targetReview.getReviewId();
+		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
+			throw new RuntimeException("삭제 권한 없음");
+		
+		reviewRepo.delete(targetReview);
+		return reviewId;
 	}
 }

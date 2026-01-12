@@ -2,6 +2,7 @@ package com.mini.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mini.domain.CustomErrorCode;
 
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ErrorRespDTO {
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;       // HTTP 상태 코드 (예: 409)
     private final String error;    // 에러 유형 (예: "Conflict")

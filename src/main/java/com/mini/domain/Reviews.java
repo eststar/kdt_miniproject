@@ -42,7 +42,7 @@ public class Reviews {
 	private Integer 		point; 		//평점
 	
 	public void changeContent(String content, Integer point) {
-		this.content = content;
-		this.point = point;
+		this.content = content == null ? this.content : content;
+		this.point = point == null ? this.point : point;
 	}
 }

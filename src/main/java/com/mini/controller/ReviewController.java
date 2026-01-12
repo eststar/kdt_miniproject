@@ -3,6 +3,7 @@ package com.mini.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,6 +44,11 @@ public class ReviewController {
 	
 	@PutMapping("/putreview")
 	public ResponseEntity<?> putReview(@RequestBody ReviewPostDTO reviewUpdate, @AuthenticationPrincipal SecurityUser userInfo){
-		return ResponseEntity.status(HttpStatus.OK).body(reviewService.updateReview(reviewUpdate, MemberDTO.builder().memberId(userInfo.getMemberId()).build()));
+		return ResponseEntity.status(HttpStatus.OK).body(reviewService.updateReview(reviewUpdate, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin()));
+	}
+	
+	@DeleteMapping("/deletereview")
+	public ResponseEntity<?> deleteReview(@RequestBody ReviewPostDTO reviewDelete, @AuthenticationPrincipal SecurityUser userInfo){
+		return ResponseEntity.status(HttpStatus.OK).body(reviewService.deleteReview(reviewDelete, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin()));
 	}
 }
