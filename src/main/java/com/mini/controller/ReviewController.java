@@ -1,5 +1,7 @@
 package com.mini.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -49,6 +51,6 @@ public class ReviewController {
 	
 	@DeleteMapping("/deletereview")
 	public ResponseEntity<?> deleteReview(@RequestBody ReviewPostDTO reviewDelete, @AuthenticationPrincipal SecurityUser userInfo){
-		return ResponseEntity.status(HttpStatus.OK).body(reviewService.deleteReview(reviewDelete, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin()));
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("reviewId", reviewService.deleteReview(reviewDelete, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
 	}
 }

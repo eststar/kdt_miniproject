@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.mini.domain.Members;
 import com.mini.domain.Reviews;
@@ -77,7 +79,7 @@ public class ReviewService {
 		Reviews targetReview = reviewRepo.findById(reviewUpdate.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
 		
 		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
-			throw new RuntimeException("수정 권한 없음");
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한 없음");
 		
 		targetReview.changeContent(reviewUpdate.getContent(), reviewUpdate.getPoint());
 		return ReviewDTO.fromReviewEntity(targetReview);
@@ -88,7 +90,7 @@ public class ReviewService {
 		Reviews targetReview = reviewRepo.findById(reviewDelete.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
 		Long reviewId = targetReview.getReviewId();
 		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
-			throw new RuntimeException("삭제 권한 없음");
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
 		
 		reviewRepo.delete(targetReview);
 		return reviewId;
