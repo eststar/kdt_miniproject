@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.mini.domain.CommentReqDTO;
-import com.mini.domain.CommentRespDTO;
+import com.mini.dto.CommentReqDTO;
+import com.mini.dto.CommentRespDTO;
 import com.mini.dto.MemberDTO;
 import com.mini.persistence.CommentRepository;
 

@@ -14,6 +14,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mini.domain.Board;
+import com.mini.domain.Comment;
 import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.Reviews;
@@ -28,6 +30,7 @@ import com.mini.domain.Role;
 import com.mini.domain.ToiletInfo;
 import com.mini.dto.MemberDTO;
 import com.mini.persistence.BoardRepository;
+import com.mini.persistence.CommentRepository;
 import com.mini.persistence.MemberRepository;
 import com.mini.persistence.ReviewRepository;
 import com.mini.persistence.ToiletInfoRepository;
@@ -35,6 +38,8 @@ import com.mini.persistence.ToiletInfoRepository;
 @SpringBootTest
 //@Transactional
 public class DummyInit{
+	@Autowired
+	private CommentRepository cRepo;
 	@Autowired
 	private BoardRepository bRepo;
 	@Autowired
@@ -46,6 +51,16 @@ public class DummyInit{
 	private PasswordEncoder encoder = new BCryptPasswordEncoder();
 	@Autowired
     private ObjectMapper objectMapper;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	private void resetSeq(String tableName, int start) {
+		String seqName = tableName+"_id_seq";
+		String sql = String.format("ALTER SEQUENCE miniproject.\"%s\" RESTART WITH %d",seqName, start);
+		jdbcTemplate.execute(sql);
+	}
+	
 //	@Test
 //	public void testInsert() {
 //		//테스트용 어드민 계정 생성
@@ -159,18 +174,22 @@ public class DummyInit{
 		}
 	}
 	
-	@Test
+//	@Test
+//	@Transactional
 	void loadExternalBoardJson() {
+		resetSeq("board", 1);
+		
 		try {
 			File file = new File("C:/workspace/testdata/board.json");
 			List<Map<String, Object>> dataList = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
-//			
+			dataList.sort((m1, m2)->Long.compare(((Number)m1.get("board_id")).longValue(), ((Number)m2.get("board_id")).longValue()));
 			for(Map<String, Object> map : dataList) {
 				Members member = memRepo.getReferenceById((String)map.get("member_id"));
 				if(member == null)
 					continue;
 				String title = (String)map.get("title");
 				String content = (String)map.get("content");
+//				Long boardId = ((Number)map.get("board_id")).longValue();
 //				String date = (String)map.get("date");
 //				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 //				LocalDate createDate = LocalDate.parse(date, formatter);
@@ -178,6 +197,7 @@ public class DummyInit{
 				OffsetDateTime createDate = OffsetDateTime.parse((String)map.get("create_date"));
 				
 				Board board = Board.builder()
+//										.boardId(boardId)
 										.createDate(createDate)
 										.title(title)
 										.content(content)
@@ -190,4 +210,42 @@ public class DummyInit{
             e.printStackTrace();
 		}
 	}
+	
+	@Test
+//	@Transactional
+	void loadExternalCommentJson() {
+		resetSeq("comment_comment", 1);
+		try {
+			File file = new File("C:/workspace/testdata/comment.json");
+			List<Map<String, Object>> dataList = objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
+//			
+			for(Map<String, Object> map : dataList) {
+				Board board = bRepo.getReferenceById(((Number)map.get("board_id")).longValue());
+				if(board == null)
+					continue;
+				Members member = memRepo.getReferenceById((String)map.get("member_id"));
+				if(member == null)
+					continue;
+				String content = (String)map.get("content");
+//				String date = (String)map.get("date");
+//				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+//				LocalDate createDate = LocalDate.parse(date, formatter);
+				
+				OffsetDateTime createTime = OffsetDateTime.parse((String)map.get("create_date"));
+				
+				Comment comment = Comment.builder()
+										.createTime(createTime)
+										.content(content)
+										.member(member)
+										.board(board)
+										.build();
+				cRepo.save(comment);
+			}
+		} catch (Exception e) {
+			System.err.println("파일을 찾을 수 없거나 읽기 오류: " + e.getMessage());
+            e.printStackTrace();
+		}
+	}
+	
+	
 }

@@ -1,8 +1,9 @@
 package com.mini.domain;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,7 +31,7 @@ public class Comment {
 	private Long 			commentId; 	// 리뷰ID
 	@Builder.Default
 	@Column(columnDefinition = "DATE DEFAULT CURRENT_DATE")
-	private LocalDate 	createTime = LocalDate.now(); //작성시간
+	private OffsetDateTime 	createTime = OffsetDateTime.now(); //작성시간
 	@Column(columnDefinition = "TEXT")
 	private String 			content; 	//리뷰내용               
 	@ManyToOne(fetch = FetchType.LAZY)

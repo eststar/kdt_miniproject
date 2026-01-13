@@ -1,4 +1,6 @@
-package com.mini.domain;
+package com.mini.dto;
+
+import com.mini.domain.Comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

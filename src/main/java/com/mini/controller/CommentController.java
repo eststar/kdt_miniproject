@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mini.domain.CommentReqDTO;
 import com.mini.domain.SecurityUser;
+import com.mini.dto.CommentReqDTO;
 import com.mini.dto.MemberDTO;
 import com.mini.service.CommentService;
 
