@@ -28,9 +28,14 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
 	private final BoardService boardService;
 	
-	@GetMapping("/getboard")
+	@GetMapping("/getallboard")
+	public ResponseEntity<?> getAllBoardWithMember(){
+		return ResponseEntity.ok(boardService.getBoardWithMemberAndComment());
+	}
+	
+	@GetMapping("/getpageboard")
 	public ResponseEntity<?> getAllBoardWithMember(@ModelAttribute BoardReqDTO boardReq){
-		return ResponseEntity.ok(boardService.getBoardWithMember(boardReq));
+		return ResponseEntity.ok(boardService.getBoardPageWithMemberAndComment(boardReq));
 	}
 	
 	@GetMapping("/getboard/{boardId}")

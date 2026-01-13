@@ -28,28 +28,28 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 	private final CommentService cService;
 	
-	@GetMapping("/getboard")
-	public ResponseEntity<?> getAllCommentWithMember(@ModelAttribute CommentReqDTO commentReq){
-		return ResponseEntity.ok(cService.getAllWithMember(commentReq));
-	}
+//	@GetMapping("/getcomment")
+//	public ResponseEntity<?> getAllCommentWithMember(@ModelAttribute CommentReqDTO commentReq){
+//		return ResponseEntity.ok(cService.getAllWithMember(commentReq));
+//	}
 	
 //	@GetMapping("/getboard/{boardId}")
 //	public ResponseEntity<?> getCommentDetailWithMember(@PathVariable Long commentId){
 //		return ResponseEntity.ok(cService);
 //	}
 	
-	@PostMapping("/postboard")
+	@PostMapping("/postcomment")
 	public ResponseEntity<?> postComment(@RequestBody CommentReqDTO commentReq, @AuthenticationPrincipal SecurityUser userInfo){
 		return ResponseEntity.ok(cService.postComment(commentReq, MemberDTO.builder().memberId(userInfo.getMemberId()).build()));
 	}
 	
-	@PutMapping("/putboard")
+	@PutMapping("/putcomment")
 	public ResponseEntity<?> patchComment(@RequestBody CommentReqDTO commentReq, @AuthenticationPrincipal SecurityUser userInfo){
 		return ResponseEntity.status(HttpStatus.OK).body(cService.updateComment(commentReq, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin()));
 	}
 	
-	@DeleteMapping("/deleteboard/{boardId}")
+	@DeleteMapping("/deletecomment/{commentId}")
 	public ResponseEntity<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal SecurityUser userInfo){
-		return ResponseEntity.status(HttpStatus.OK).body(Map.of("boardId", cService.deleteComment(commentId, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("commentId", cService.deleteComment(commentId, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
 	}
 }

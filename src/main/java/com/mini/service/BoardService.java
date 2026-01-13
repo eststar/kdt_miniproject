@@ -3,6 +3,8 @@ package com.mini.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.mini.domain.Members;
 import com.mini.dto.BoardReqDTO;
 import com.mini.dto.BoardRespDTO;
 import com.mini.dto.MemberDTO;
+import com.mini.dto.PageRespDTO;
 import com.mini.persistence.BoardRepository;
 import com.mini.persistence.MemberRepository;
 
@@ -26,12 +29,8 @@ public class BoardService {
 	private final BoardRepository bRepo;
 	private final MemberRepository memRepo;
 	
-	public List<BoardRespDTO> getBoardWithMember(BoardReqDTO boardReq){
-		List<Board> boardList = new ArrayList<>();
-		if(boardReq.getPageNum() != null && boardReq.getPageSize() != null)
-			boardList = bRepo.getPageWithMembers(PageRequest.of(boardReq.getPageNum(), boardReq.getPageSize()));
-		else
-			boardList = bRepo.getAllWithMembers();
+	public List<BoardRespDTO> getBoardWithMemberAndComment(){
+		List<Board> boardList = bRepo.getAllWithMembersAndComment();
 		
 		List<BoardRespDTO> dtoList = new ArrayList<>();
 		
@@ -42,13 +41,25 @@ public class BoardService {
 		return dtoList;
 	}
 	
+	public PageRespDTO<BoardRespDTO> getBoardPageWithMemberAndComment(BoardReqDTO boardReq){
+		Page<Board> boardPage = bRepo.getPageWithMembers(PageRequest.of(boardReq.getPageNum(), boardReq.getPageSize()));
+		
+		List<BoardRespDTO> dtoList = new ArrayList<>();
+		
+		for(Board b : boardPage.getContent()) {
+			dtoList.add(BoardRespDTO.fromBoardEntity(b));
+		}
+		
+		return new PageRespDTO<>(boardPage, dtoList);
+	}
+	
 	public BoardRespDTO getBoardDetailWithMember(Long boardId) {
 		Board targetB = bRepo.getBoardByIdWithMember(boardId).orElseThrow(()->new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
 		return BoardRespDTO.fromBoardEntity(targetB);
 	}
 	
 	public List<BoardRespDTO> getAllWithMember(){
-		List<Board> boardList = bRepo.getAllWithMembers();
+		List<Board> boardList = bRepo.getAllWithMembersAndComment();
 		List<BoardRespDTO> dtoList = new ArrayList<>();
 		
 		for(Board b : boardList) {

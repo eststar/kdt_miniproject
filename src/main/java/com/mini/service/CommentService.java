@@ -16,9 +16,9 @@ import lombok.RequiredArgsConstructor;
 public class CommentService {
 	private final CommentRepository cRepo;
 	
-	public List<CommentRespDTO> getAllWithMember(CommentReqDTO commentReq){
-		return null;
-	}
+//	public List<CommentRespDTO> getAllWithMember(CommentReqDTO commentReq){
+//		return null;
+//	}
 	
 	public CommentRespDTO postComment(CommentReqDTO commentReq, MemberDTO memberDTO) {
 		return null;
