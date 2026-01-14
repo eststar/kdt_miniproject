@@ -21,9 +21,10 @@ public class BoardRespDTO {
 	private String title;               // 제목
 	private String content;             // 내용
 	private MemberRespDTO member;		// 작성한 멤버정보
-	private Long commentCnt; 
+	@Builder.Default
+	private Long commentCnt = 0L; 
 	
-	public static BoardRespDTO fromBoardEntity(Board board) {
+	public static BoardRespDTO fromBoardEntity(Board board, Long commentCnt) {
 		
 		return BoardRespDTO.builder()
 					.boardId(board.getBoardId())
@@ -31,7 +32,7 @@ public class BoardRespDTO {
 					.title(board.getTitle())
 					.content(board.getContent())
 					.member(MemberRespDTO.fromMemberEntity(board.getMember()))
-					.commentCnt(((Number)board.getCommentList().size()).longValue())
+					.commentCnt(commentCnt)
 					.build();
 	}
 }

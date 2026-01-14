@@ -41,7 +41,7 @@ public class BoardController {
 	
 	@GetMapping("/getboard/{boardId}")
 	public ResponseEntity<?> getBoardDetailWithMember(@PathVariable Long boardId){
-		return ResponseEntity.ok(boardService.getBoardDetailWithMemberAndComment(boardId));
+		return ResponseEntity.ok(boardService.getBoardDetailWithMember(boardId));
 	}
 	
 	@PostMapping("/postboard")

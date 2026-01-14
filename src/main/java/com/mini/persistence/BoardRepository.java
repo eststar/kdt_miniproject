@@ -16,10 +16,10 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	@Query("SELECT b FROM Board b JOIN FETCH b.member ORDER BY b.createDate DESC")
 	Page<Board> getPageWithMembers(Pageable limit);
 	
-	@Query("SELECT DISTINCT b FROM Board b JOIN FETCH b.member JOIN FETCH b.commentList ORDER BY b.createDate DESC")
+	@Query("SELECT b FROM Board b JOIN FETCH b.member ORDER BY b.createDate DESC")
 	List<Board> getAllWithMembersAndComment();
 	
 	@Query("SELECT b FROM Board b JOIN FETCH b.member WHERE b.boardId = :id ")
-	Optional<Board> getBoardByIdWithMember(@Param("id") Long id);
+	Optional<Board> getBoardDetailByIdWithMember(@Param("id") Long id);
 	
 }

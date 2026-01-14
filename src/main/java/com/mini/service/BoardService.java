@@ -18,6 +18,7 @@ import com.mini.dto.BoardRespDTO;
 import com.mini.dto.MemberDTO;
 import com.mini.dto.PageRespDTO;
 import com.mini.persistence.BoardRepository;
+import com.mini.persistence.CommentRepository;
 import com.mini.persistence.MemberRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 public class BoardService {
 	private final BoardRepository bRepo;
 	private final MemberRepository memRepo;
+	private final CommentRepository cRepo;
+	
 	
 	public List<BoardRespDTO> getAllBoardWithMemberAndComment(){
 		List<Board> boardList = bRepo.getAllWithMembersAndComment();
@@ -35,7 +38,8 @@ public class BoardService {
 		List<BoardRespDTO> dtoList = new ArrayList<>();
 		
 		for(Board b : boardList) {
-			dtoList.add(BoardRespDTO.fromBoardEntity(b));
+			Long commentCnt = (long)b.getCommentList().size();
+			dtoList.add(BoardRespDTO.fromBoardEntity(b, commentCnt));
 		}
 		
 		return dtoList;
@@ -47,27 +51,18 @@ public class BoardService {
 		List<BoardRespDTO> dtoList = new ArrayList<>();
 		
 		for(Board b : boardPage.getContent()) {
-			dtoList.add(BoardRespDTO.fromBoardEntity(b));
+			Long commentCnt = (long)b.getCommentList().size();
+			dtoList.add(BoardRespDTO.fromBoardEntity(b, commentCnt));
 		}
 		
 		return new PageRespDTO<>(boardPage, dtoList);
 	}
 	
-	public BoardDetailRespDTO getBoardDetailWithMemberAndComment(Long boardId) {
-		Board targetB = bRepo.getBoardByIdWithMember(boardId).orElseThrow(()->new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
-		return BoardDetailRespDTO.fromBoardEntity(targetB);
+	public BoardRespDTO getBoardDetailWithMember(Long boardId) {
+		Board targetB = bRepo.getBoardDetailByIdWithMember(boardId).orElseThrow(()->new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
+		Long commentCnt = (long)targetB.getCommentList().size();
+		return BoardRespDTO.fromBoardEntity(targetB, commentCnt);
 	}
-	
-//	public List<BoardRespDTO> getAllWithMember(){
-//		List<Board> boardList = bRepo.getAllWithMembersAndComment();
-//		List<BoardRespDTO> dtoList = new ArrayList<>();
-//		
-//		for(Board b : boardList) {
-//			dtoList.add(BoardRespDTO.fromBoardEntity(b));
-//		}
-//		
-//		return dtoList;
-//	}
 	
 	public BoardRespDTO postBoard(BoardReqDTO boardReq, MemberDTO memberDTO) {
 		Members currentMember =  memRepo.getReferenceById(memberDTO.getMemberId());
@@ -78,7 +73,7 @@ public class BoardService {
 										.member(currentMember)
 										.build());
 		
-		return BoardRespDTO.fromBoardEntity(targetB);
+		return BoardRespDTO.fromBoardEntity(targetB, (long)targetB.getCommentList().size());
 	}
 	
 	
@@ -90,7 +85,8 @@ public class BoardService {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한 없음");
 		
 		targetBoard.changeContent(boardUpdate.getContent(), boardUpdate.getTitle());
-		return BoardRespDTO.fromBoardEntity(targetBoard);
+		Long commentCnt = cRepo.countByBoard_BoardId(targetBoard.getBoardId());
+		return BoardRespDTO.fromBoardEntity(targetBoard, commentCnt);
 	}
 	
 	@Transactional

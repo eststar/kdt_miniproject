@@ -51,7 +51,8 @@ public class SecurityConfig {
 	
 	private static final String[] AUTH_LIST = {
 			"/api/test/review/postreview", "/api/test/review/putreview", "/api/test/review/deletereview/**",
-			"/api/test/board/postboard", "/api/test/board/putboard", "/api/test/board/deleteboard/**"
+			"/api/test/board/postboard", "/api/test/board/putboard", "/api/test/board/deleteboard/**",
+			"/api/test/comment/postcomment", "/api/test/comment/putcomment", "/api/test/comment/deletecomment/**"
 	};
 	
 	@Bean

@@ -33,10 +33,15 @@ public class CommentController {
 //		return ResponseEntity.ok(cService.getAllWithMember(commentReq));
 //	}
 	
-//	@GetMapping("/getboard/{boardId}")
-//	public ResponseEntity<?> getCommentDetailWithMember(@PathVariable Long commentId){
-//		return ResponseEntity.ok(cService);
-//	}
+	@GetMapping("/{boardId}/all")
+	public ResponseEntity<?> getCommentAllWithMember(@PathVariable Long boardId){
+		return ResponseEntity.ok(cService.getCommentAllWithMember(boardId));
+	}
+	
+	@GetMapping("/{boardId}")
+	public ResponseEntity<?> getCommentPageWithMember(@PathVariable Long boardId, @ModelAttribute CommentReqDTO reqDTO){
+		return ResponseEntity.ok(cService.getCommentPageWithMember(boardId, reqDTO));
+	}
 	
 	@PostMapping("/postcomment")
 	public ResponseEntity<?> postComment(@RequestBody CommentReqDTO commentReq, @AuthenticationPrincipal SecurityUser userInfo){

@@ -17,7 +17,7 @@ public interface ReviewRepository extends JpaRepository<Reviews, Long>{
 	List<Reviews> getAllWithMember(@Param("dataCd")String dataCd);
 	
 	//로그인 상태이면 본인 리뷰 최상단
-	@Query("SELECT r FROM Reviews r JOIN FETCH r.member WHERE r.toiletinfo.dataCd = :dataCd " 
+	@Query("SELECT r FROM Reviews r JOIN FETCH r.member WHERE r.toiletinfo.dataCd = :dataCd "
 			+ " ORDER BY CASE WHEN r.member.memberId =:myId THEN 0 ELSE 1 END, r.createDate DESC ")
 	List<Reviews> getAllWithMemberMyReviewFirst(@Param("dataCd")String dataCd, @Param("myId")String myId);
 	
