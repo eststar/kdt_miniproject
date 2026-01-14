@@ -40,4 +40,7 @@ public class MemberController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(success);
 	}
+	
+//	@PostMapping("/update")
+//	public ResponseEntity<?> updateMember(@RequestBody )
 }

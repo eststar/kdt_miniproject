@@ -13,11 +13,12 @@ import com.mini.domain.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Long>{
 	Long countByBoard_BoardId(Long boardId);
 	
+	//오래된 댓글이 맨위로. 오름차순으로
 	@Query("SELECT c FROM Comment c JOIN FETCH c.member WHERE c.board.boardId= :boardId" 
-			+ " ORDER BY c.createTime DESC ")
+			+ " ORDER BY c.createTime ASC ")
 	List<Comment> getAllByBoardIdWithMember(@Param("boardId") Long boardId);
 	
 	@Query("SELECT c FROM Comment c JOIN FETCH c.member WHERE c.board.boardId= :boardId" 
-			+ " ORDER BY c.createTime DESC ")
+			+ " ORDER BY c.createTime ASC ")
 	Page<Comment> getCommentPageWithMember(@Param("boardId") Long boardId, Pageable page);
 }

@@ -28,7 +28,7 @@ public class MemberDTO {
 	@Builder.Default
 	private Long 			tpCnt = 0L;       //휴지배달개수
 	private Role			role;        //권한
-	private String 			nickname;	 //이름
+	private String 			nickname;	 //닉네임
 	private Provider 		provider;   //로그인방식
 	private Boolean 		enabled; //활성화 여부
 	
