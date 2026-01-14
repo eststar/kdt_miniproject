@@ -60,7 +60,7 @@ public class ReviewService {
 	
 	//멤버 로그인 상태에서만 가능하도록 해야함
 	public ReviewDTO postReview(ReviewPostDTO reviewPost, MemberDTO memberdto) {
-		ToiletInfo targetToilet = toiletRepo.findById(reviewPost.getDataCd()).orElseThrow(()->new EntityNotFoundException("해당 화장실 정보를 찾을 수 없습니다."));
+		ToiletInfo targetToilet = toiletRepo.findById(reviewPost.getDataCd()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 화장실 정보를 찾을 수 없습니다."));
 		Members targetMember = memRepo.getReferenceById(memberdto.getMemberId());
 		
 		Reviews targetR = reviewRepo.save(Reviews.builder()
@@ -75,7 +75,7 @@ public class ReviewService {
 	
 	@Transactional
 	public ReviewDTO updateReview(ReviewPostDTO reviewUpdate, MemberDTO memberdto, Boolean isAdmin) {
-		Reviews targetReview = reviewRepo.findById(reviewUpdate.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
+		Reviews targetReview = reviewRepo.findById(reviewUpdate.getReviewId()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없음"));
 		
 		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한 없음");
@@ -86,7 +86,7 @@ public class ReviewService {
 	
 	@Transactional
 	public Long deleteReview(Long reviewId, MemberDTO memberdto, Boolean isAdmin) {
-		Reviews targetReview = reviewRepo.findById(reviewId).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
+		Reviews targetReview = reviewRepo.findById(reviewId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없음"));
 		Long targetReviewId = targetReview.getReviewId();
 		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");

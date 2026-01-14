@@ -59,7 +59,7 @@ public class BoardService {
 	}
 	
 	public BoardRespDTO getBoardDetailWithMember(Long boardId) {
-		Board targetB = bRepo.getBoardDetailByIdWithMember(boardId).orElseThrow(()->new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
+		Board targetB = bRepo.getBoardDetailByIdWithMember(boardId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 게시글을 찾을 수 없습니다."));
 		Long commentCnt = (long)targetB.getCommentList().size();
 		return BoardRespDTO.fromBoardEntity(targetB, commentCnt);
 	}
@@ -79,7 +79,7 @@ public class BoardService {
 	
 	@Transactional
 	public BoardRespDTO updateBoard(BoardReqDTO boardUpdate, MemberDTO memberdto, Boolean isAdmin) {
-		Board targetBoard = bRepo.findById(boardUpdate.getBoardId()).orElseThrow(()-> new IllegalArgumentException("게시글을 찾을 수 없음"));
+		Board targetBoard = bRepo.findById(boardUpdate.getBoardId()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"게시글을 찾을 수 없음"));
 		
 		if(!targetBoard.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한 없음");
@@ -91,7 +91,7 @@ public class BoardService {
 	
 	@Transactional
 	public Long deleteBoard(Long targetBoardId, MemberDTO memberdto, Boolean isAdmin) {
-		Board targetBoard = bRepo.findById(targetBoardId).orElseThrow(()-> new IllegalArgumentException("게시글을 찾을 수 없음"));
+		Board targetBoard = bRepo.findById(targetBoardId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"게시글을 찾을 수 없음"));
 		Long boardId = targetBoard.getBoardId();
 		if(!targetBoard.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");

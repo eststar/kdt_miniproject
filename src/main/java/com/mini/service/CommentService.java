@@ -60,8 +60,9 @@ public class CommentService {
 
 	@Transactional
 	public CommentRespDTO updateComment(CommentReqDTO commentReq, MemberDTO memberDTO, Boolean isAdmin) {
+		bRepo.findById(commentReq.getBoardId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없음"));
 		Comment currentComment = cRepo.findById(commentReq.getCommentId())
-				.orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없음"));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없음"));
 
 		if (!currentComment.getMember().getMemberId().equals(memberDTO.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정 권한 없음");
@@ -72,7 +73,7 @@ public class CommentService {
 
 	public Long deleteComment(Long commentId, MemberDTO memberDTO, Boolean isAdmin) {
 		Comment targetComment = cRepo.findById(commentId)
-				.orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없음"));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"댓글을 찾을 수 없음"));
 		Long targetId = targetComment.getCommentId();
 		if (!targetComment.getMember().getMemberId().equals(memberDTO.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한 없음");
