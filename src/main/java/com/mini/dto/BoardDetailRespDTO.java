@@ -1,37 +1,42 @@
 package com.mini.dto;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mini.domain.Board;
+import com.mini.domain.Comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//전체 board조회용 dto
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BoardRespDTO {
+public class BoardDetailRespDTO {
 	private Long boardId;               // 게시글ID
 	private OffsetDateTime createDate;  // 작성시간
 	private String title;               // 제목
 	private String content;             // 내용
 	private MemberRespDTO member;		// 작성한 멤버정보
-	private Long commentCnt; 
+	private List<CommentRespDTO> commentList; 
 	
-	public static BoardRespDTO fromBoardEntity(Board board) {
+	public static BoardDetailRespDTO fromBoardEntity(Board board) {
+		List<CommentRespDTO> dtoList = new ArrayList<>();
+		for(Comment c : board.getCommentList()) {
+			dtoList.add(CommentRespDTO.fromCommentEntity(c));
+		}
 		
-		return BoardRespDTO.builder()
+		return BoardDetailRespDTO.builder()
 					.boardId(board.getBoardId())
 					.createDate(board.getCreateDate())
 					.title(board.getTitle())
 					.content(board.getContent())
 					.member(MemberRespDTO.fromMemberEntity(board.getMember()))
-					.commentCnt(((Number)board.getCommentList().size()).longValue())
+					.commentList(dtoList)
 					.build();
 	}
 }

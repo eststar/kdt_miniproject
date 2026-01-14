@@ -30,17 +30,18 @@ public class BoardController {
 	
 	@GetMapping("/getallboard")
 	public ResponseEntity<?> getAllBoardWithMember(){
-		return ResponseEntity.ok(boardService.getBoardWithMemberAndComment());
+		return ResponseEntity.ok(boardService.getAllBoardWithMemberAndComment());
 	}
 	
+	//pageNum pageSize 받아야함
 	@GetMapping("/getpageboard")
-	public ResponseEntity<?> getAllBoardWithMember(@ModelAttribute BoardReqDTO boardReq){
+	public ResponseEntity<?> getBoardPageWithMember(@ModelAttribute BoardReqDTO boardReq){
 		return ResponseEntity.ok(boardService.getBoardPageWithMemberAndComment(boardReq));
 	}
 	
 	@GetMapping("/getboard/{boardId}")
 	public ResponseEntity<?> getBoardDetailWithMember(@PathVariable Long boardId){
-		return ResponseEntity.ok(boardService.getBoardDetailWithMember(boardId));
+		return ResponseEntity.ok(boardService.getBoardDetailWithMemberAndComment(boardId));
 	}
 	
 	@PostMapping("/postboard")

@@ -4,9 +4,11 @@ import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BoardReqDTO {
 	private Long boardId;               // 게시글ID
 	private OffsetDateTime createDate;  // 작성시간

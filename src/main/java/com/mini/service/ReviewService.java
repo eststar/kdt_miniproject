@@ -85,13 +85,13 @@ public class ReviewService {
 	}
 	
 	@Transactional
-	public Long deleteReview(ReviewPostDTO reviewDelete, MemberDTO memberdto, Boolean isAdmin) {
-		Reviews targetReview = reviewRepo.findById(reviewDelete.getReviewId()).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
-		Long reviewId = targetReview.getReviewId();
+	public Long deleteReview(Long reviewId, MemberDTO memberdto, Boolean isAdmin) {
+		Reviews targetReview = reviewRepo.findById(reviewId).orElseThrow(()-> new IllegalArgumentException("리뷰를 찾을 수 없음"));
+		Long targetReviewId = targetReview.getReviewId();
 		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
 		
 		reviewRepo.delete(targetReview);
-		return reviewId;
+		return targetReviewId;
 	}
 }

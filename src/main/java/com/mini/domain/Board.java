@@ -1,7 +1,10 @@
 package com.mini.domain;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.BatchSize;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -41,9 +44,12 @@ public class Board {
 	private String content;             // 내용
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
-	private Members member;			// 작성한 멤버정보
+	private Members member;		// 작성한 멤버정보
+
+	@Builder.Default
+	@BatchSize(size = 100)
 	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Comment> commentList;
+	private List<Comment> commentList = new ArrayList<>();
 	
 	public void changeContent(String content, String title) {
 		this.content = content == null ? this.content : content;

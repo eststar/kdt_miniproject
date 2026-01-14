@@ -3,7 +3,6 @@ package com.mini.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.BatchSize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.mini.domain.Board;
 import com.mini.domain.Members;
+import com.mini.dto.BoardDetailRespDTO;
 import com.mini.dto.BoardReqDTO;
 import com.mini.dto.BoardRespDTO;
 import com.mini.dto.MemberDTO;
@@ -29,7 +29,7 @@ public class BoardService {
 	private final BoardRepository bRepo;
 	private final MemberRepository memRepo;
 	
-	public List<BoardRespDTO> getBoardWithMemberAndComment(){
+	public List<BoardRespDTO> getAllBoardWithMemberAndComment(){
 		List<Board> boardList = bRepo.getAllWithMembersAndComment();
 		
 		List<BoardRespDTO> dtoList = new ArrayList<>();
@@ -53,21 +53,21 @@ public class BoardService {
 		return new PageRespDTO<>(boardPage, dtoList);
 	}
 	
-	public BoardRespDTO getBoardDetailWithMember(Long boardId) {
+	public BoardDetailRespDTO getBoardDetailWithMemberAndComment(Long boardId) {
 		Board targetB = bRepo.getBoardByIdWithMember(boardId).orElseThrow(()->new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
-		return BoardRespDTO.fromBoardEntity(targetB);
+		return BoardDetailRespDTO.fromBoardEntity(targetB);
 	}
 	
-	public List<BoardRespDTO> getAllWithMember(){
-		List<Board> boardList = bRepo.getAllWithMembersAndComment();
-		List<BoardRespDTO> dtoList = new ArrayList<>();
-		
-		for(Board b : boardList) {
-			dtoList.add(BoardRespDTO.fromBoardEntity(b));
-		}
-		
-		return dtoList;
-	}
+//	public List<BoardRespDTO> getAllWithMember(){
+//		List<Board> boardList = bRepo.getAllWithMembersAndComment();
+//		List<BoardRespDTO> dtoList = new ArrayList<>();
+//		
+//		for(Board b : boardList) {
+//			dtoList.add(BoardRespDTO.fromBoardEntity(b));
+//		}
+//		
+//		return dtoList;
+//	}
 	
 	public BoardRespDTO postBoard(BoardReqDTO boardReq, MemberDTO memberDTO) {
 		Members currentMember =  memRepo.getReferenceById(memberDTO.getMemberId());

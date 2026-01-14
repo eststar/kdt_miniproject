@@ -2,9 +2,11 @@ package com.mini.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReviewReqDTO {
 	private Long 	reviewId; 	// 리뷰ID
 	

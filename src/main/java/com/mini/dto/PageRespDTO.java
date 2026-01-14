@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class PageRespDTO<T> {
-	private List<T> dtoList;      
+	private List<T> data;      
     private int pageNum;          // 현재 페이지
     private int pageSize;
     private int totalPages;       // 전체 페이지 수
@@ -23,7 +23,7 @@ public class PageRespDTO<T> {
     private boolean isFirst;      // 첫 페이지 여부
     
     public PageRespDTO(Page<?> page, List<T> dtoList) {
-    	this.dtoList = dtoList;   
+    	this.data = dtoList;   
     	this.pageNum = page.getNumber();       
     	this.totalPages = page.getTotalPages();    
     	this.totalElements = page.getTotalElements();

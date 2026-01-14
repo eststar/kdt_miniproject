@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,8 +50,8 @@ public class ReviewController {
 		return ResponseEntity.status(HttpStatus.OK).body(reviewService.updateReview(reviewUpdate, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin()));
 	}
 	
-	@DeleteMapping("/deletereview")
-	public ResponseEntity<?> deleteReview(@ModelAttribute ReviewPostDTO reviewDelete, @AuthenticationPrincipal SecurityUser userInfo){
-		return ResponseEntity.status(HttpStatus.OK).body(Map.of("reviewId", reviewService.deleteReview(reviewDelete, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
+	@DeleteMapping("/deletereview/{reviewId}")
+	public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @AuthenticationPrincipal SecurityUser userInfo){
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("reviewId", reviewService.deleteReview(reviewId, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
 	}
 }
