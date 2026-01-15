@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Oauth2FailureHandler extends SimpleUrlAuthenticationFailureHandler{
 	@Value("${app.frontend.url}")
+	private String frontTestURL;
+	
+	@Value("${frontvercel.url}")
 	private String frontURL;
 	
 	@Override

@@ -30,6 +30,9 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	@Value("${app.frontend.url}")
 	private String successUrl;
 	
+	@Value("${frontvercel.url}")
+	private String frontURL;
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
@@ -44,7 +47,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
 		response.addHeader("Set-Cookie", cookie.toString());
 //		response.sendRedirect(frontUrl);
-		getRedirectStrategy().sendRedirect(request, response, successUrl);
+		getRedirectStrategy().sendRedirect(request, response, frontURL);
 	}
 	
 //	@SuppressWarnings("unchecked")
