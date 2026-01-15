@@ -45,7 +45,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 		}
 		
 		//쿠키에 prefix 이미 제거한거라 제거 안된거 들어오면 return
-		if(jwtToken == null || jwtToken.startsWith(JWTUtil.prefix)) {
+		if(jwtToken == null) {
 			filterChain.doFilter(request, response);
 			return;
 		}

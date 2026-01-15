@@ -17,10 +17,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -44,6 +49,12 @@ public class SecurityConfig {
 	@Value("${ngrok-redirect.baseurl}")
 	private String ngrokRedirectURL;
 	
+	@Value("${app.frontend.url}")
+	private String frontTestUrl;
+	
+	@Value("${frontvercel.url}")
+	private String frontURL;
+	
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -52,6 +63,8 @@ public class SecurityConfig {
 	private final AuthenticationConfiguration authenticationConfig;
 	private final AuthenticationSuccessHandler oauth2SuccessHandler;
 	private final MemberRepository memRepo;
+	
+	private final ClientRegistrationRepository clientRegistrationRepository;
 	
 	private static final String[] AUTH_LIST = {
 			"/api/test/review/postreview", "/api/test/review/putreview", "/api/test/review/deletereview/**",
@@ -72,11 +85,15 @@ public class SecurityConfig {
 										.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
 							.anyRequest().permitAll()); //현재 임시로 전체 가능하게
 		
-		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 		
 		http.addFilterBefore(new JWTAuthorizationFilter(memRepo), AuthorizationFilter.class); //인가처리 필터
 		http.addFilter(new JWTAuthenticationFilter(authenticationConfig.getAuthenticationManager())); //인증처리 필터
-		http.oauth2Login(oauth2->oauth2.successHandler(oauth2SuccessHandler));
+		http.oauth2Login(oauth2->oauth2
+						.loginPage(frontURL+"/login")
+						.authorizationEndpoint(auth -> auth
+                		.authorizationRequestResolver(customAuthorizationRequestResolver(clientRegistrationRepository)))
+								.successHandler(oauth2SuccessHandler));
 		http.logout(logout->logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler())); //로그아웃 처리
 		http.exceptionHandling(conf->conf.authenticationEntryPoint((request, response, authException)->authFailHandler(request, response, authException)));
 		return http.build();
@@ -99,8 +116,7 @@ public class SecurityConfig {
 	private LogoutSuccessHandler logoutSuccessHandler() {
 		return (request, response, authentication)->{
 			ResponseCookie cookie = JWTUtil.makeJWTTokenCookie("", 0); //cookie 유효시간 0으로
-			response.addHeader("Set-Cookie", cookie.toString());		
-//			response.addCookie(cookie);
+			response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());		
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("=== 로그아웃 처리 완료 (200 OK) ===");
@@ -119,6 +135,34 @@ public class SecurityConfig {
 	@Bean
 	static RoleHierarchy roleHierarchy() {
 		return RoleHierarchyImpl.withDefaultRolePrefix().role("ADMIN").implies("MEMBER").build();
+	}
+	
+	private OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver(
+	        										ClientRegistrationRepository clientRegistrationRepository) {
+
+	    DefaultOAuth2AuthorizationRequestResolver resolver = 
+	            new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
+
+	    // 매개변수 customizer를 사용하여 요청을 가공합니다.
+	    resolver.setAuthorizationRequestCustomizer(customizer -> {
+	        // 프론트엔드에서 보낸 쿼리 파라미터를 꺼내서 추가(additionalParameters)합니다.
+	        // 이러면 리다이렉트되어도 스프링이 세션에 이 값을 보관합니다.
+	    	ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+	        
+	        if (attributes != null) {
+	            HttpServletRequest request = attributes.getRequest();
+	            String target = request.getParameter("target"); // 프론트가 보낸 ?target=/main
+
+	            if (target != null && !target.isEmpty()) {
+	                // 이 'params' 주머니에 넣어두면 스프링이 세션(oauth2_auth_request)에 함께 저장합니다.
+	                customizer.additionalParameters(params -> params.put("target", target));
+	                request.getSession().setAttribute("FINAL_TARGET", target);
+	                System.out.println("세션에 직접 보관 완료: " + target);
+	            }
+	        }
+	    });
+
+	    return resolver;
 	}
 	
 }

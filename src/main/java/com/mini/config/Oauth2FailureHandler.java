@@ -14,23 +14,21 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class Oauth2FailureHandler extends SimpleUrlAuthenticationFailureHandler{
+public class Oauth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	@Value("${app.frontend.url}")
 	private String frontTestURL;
-	
+
 	@Value("${frontvercel.url}")
 	private String frontURL;
-	
+
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		String targetURL = request.getHeader("Referer");
-		String defaultURL = frontURL;
-		if(targetURL == null || targetURL.isEmpty())
-			targetURL = defaultURL;
-		
+		String targetURL = frontURL+"/login";
+
+
 		System.out.println("Oauth2 로그인 실패: " + exception.getMessage());
 		getRedirectStrategy().sendRedirect(request, response, targetURL);
 	}
-	
+
 }
