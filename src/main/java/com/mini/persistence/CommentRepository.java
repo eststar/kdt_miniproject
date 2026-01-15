@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mini.domain.Board;
 import com.mini.domain.Comment;
+import com.mini.domain.Members;
 
 public interface CommentRepository extends JpaRepository<Comment, Long>{
 	Long countByBoard_BoardId(Long boardId);
@@ -21,4 +23,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Query("SELECT c FROM Comment c JOIN FETCH c.member WHERE c.board.boardId= :boardId" 
 			+ " ORDER BY c.createTime ASC ")
 	Page<Comment> getCommentPageWithMember(@Param("boardId") Long boardId, Pageable page);
+	
 }

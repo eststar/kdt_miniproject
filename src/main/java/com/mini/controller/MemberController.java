@@ -3,7 +3,9 @@ package com.mini.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,8 @@ import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.SecurityUser;
 import com.mini.dto.MemberDTO;
+import com.mini.dto.MemberDeleteDTO;
+import com.mini.dto.MemberReqDTO;
 import com.mini.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,8 +45,13 @@ public class MemberController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(success);
 	}
 	
-//	@PostMapping("/update")
-//	public ResponseEntity<?> updateMember(@RequestBody MemberReqDTO reqDTO, @AuthenticationPrincipal SecurityUser userInfo){
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body();
-//	}
+	@PatchMapping("/update")
+	public ResponseEntity<?> updateMember(@RequestBody MemberReqDTO reqDTO, @AuthenticationPrincipal SecurityUser userInfo){
+		return ResponseEntity.ok(memService.updateMember(reqDTO, userInfo.getMemberId()));
+	}
+	
+	@DeleteMapping("/signout")
+	public ResponseEntity<Void> deleteMember(@RequestBody MemberDeleteDTO delDTO, @AuthenticationPrincipal SecurityUser userInfo){
+		return ResponseEntity.noContent().build();
+	}
 }

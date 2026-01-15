@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mini.domain.Members;
 import com.mini.domain.Reviews;
 import com.mini.dto.AveragePointDTO;
 
@@ -44,4 +45,5 @@ public interface ReviewRepository extends JpaRepository<Reviews, Long>{
 			+ " HAVING COUNT(r) >= 3 "
 			+ " ORDER BY AVG(COALESCE(r.point, 1.0)) DESC, COUNT(r) DESC")
 	List<AveragePointDTO> getAveragePointAll();
+	
 }

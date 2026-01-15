@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberReqDTO {
-	private String nickname;	 //닉네임
+public class MemberDeleteDTO {
 	private String password;
-	private String newPassword;
-	private String newPasswordConfirm;
 }

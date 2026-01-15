@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.mini.domain.Board;
+import com.mini.domain.Members;
 
 public interface BoardRepository extends JpaRepository<Board, Long>{
 	
