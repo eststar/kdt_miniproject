@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -16,7 +17,6 @@ import com.mini.service.MemberService;
 import com.mini.util.JWTUtil;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	private final MemberService memService;
 	
 	@Value("${app.frontend.url}")
-	private String successUrl;
+	private String frontTestUrl;
 	
 	@Value("${frontvercel.url}")
 	private String frontURL;
@@ -45,9 +45,18 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		
 		String token = JWTUtil.getJWT(memdto.getMemberId());
 		ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
-		response.addHeader("Set-Cookie", cookie.toString());
+//		System.out.println("생성된 쿠키 문자열: " + cookie.toString());
+//		response.addHeader("Set-Cookie", cookie.toString());
+		response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 //		response.sendRedirect(frontUrl);
-		getRedirectStrategy().sendRedirect(request, response, frontURL);
+		
+		String targetURL = request.getHeader("Referer"); // 요청 온 곳 확인
+	    
+	    // 만약 Referer가 없거나, 구글 주소거나, 백엔드 주소라면 프론트 메인으로 보냄
+	    if (targetURL == null || targetURL.contains("google.com") || targetURL.contains("ngrok")) {
+	        targetURL = frontURL; 
+	    }
+		getRedirectStrategy().sendRedirect(request, response, targetURL);
 	}
 	
 //	@SuppressWarnings("unchecked")

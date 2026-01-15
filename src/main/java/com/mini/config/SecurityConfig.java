@@ -98,7 +98,7 @@ public class SecurityConfig {
 	//로그아웃시 처리
 	private LogoutSuccessHandler logoutSuccessHandler() {
 		return (request, response, authentication)->{
-			ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(null, 0); //cookie 유효시간 0으로
+			ResponseCookie cookie = JWTUtil.makeJWTTokenCookie("", 0); //cookie 유효시간 0으로
 			response.addHeader("Set-Cookie", cookie.toString());		
 //			response.addCookie(cookie);
 			
