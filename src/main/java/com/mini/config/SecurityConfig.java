@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -97,9 +98,9 @@ public class SecurityConfig {
 	//로그아웃시 처리
 	private LogoutSuccessHandler logoutSuccessHandler() {
 		return (request, response, authentication)->{
-			Cookie cookie = JWTUtil.makeJWTTokenCookie(null, 0); //cookie 유효시간 0으로
-					
-			response.addCookie(cookie);
+			ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(null, 0); //cookie 유효시간 0으로
+			response.addHeader("Set-Cookie", cookie.toString());		
+//			response.addCookie(cookie);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("=== 로그아웃 처리 완료 (200 OK) ===");

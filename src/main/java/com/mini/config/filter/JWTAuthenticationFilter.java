@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -66,9 +67,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = JWTUtil.getJWT(user.getMemberId(), user.getProvider().name(), role);//user 이름으로 토큰 생성
 		
 		//response header에 json을 보내는 대신 쿠키 전달
-		Cookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12); //1시간
-				
-		response.addCookie(jwtCookie);
+		ResponseCookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12); //1시간
+		response.addHeader("Set-Cookie", jwtCookie.toString());
+//		response.addCookie(jwtCookie);
 		
 		response.setStatus(HttpStatus.OK.value());
 		System.out.println("success:[JWTAuthFilter] " + user);

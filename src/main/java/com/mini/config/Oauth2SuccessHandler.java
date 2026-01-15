@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -40,8 +41,8 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		MemberDTO memdto = memService.save(memberId, username, map.get("provider").toUpperCase(), oauth2pass, nickname);
 		
 		String token = JWTUtil.getJWT(memdto.getMemberId());
-		Cookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
-		response.addCookie(cookie);
+		ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
+		response.addHeader("Set-Cookie", cookie.toString());
 //		response.sendRedirect(frontUrl);
 		getRedirectStrategy().sendRedirect(request, response, successUrl);
 	}

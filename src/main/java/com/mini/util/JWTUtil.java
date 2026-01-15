@@ -2,6 +2,8 @@ package com.mini.util;
 
 import java.util.Date;
 
+import org.springframework.http.ResponseCookie;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
@@ -53,14 +55,15 @@ public class JWTUtil {
 		return JWT.require(Algorithm.HMAC256(JWT_KEY)).build().verify(tok).getExpiresAt().before(new Date());
 	}
 	
-	public static Cookie makeJWTTokenCookie(String token, int timer) {
+	public static ResponseCookie makeJWTTokenCookie(String token, int timer) {
 		String realToken = (token == null)? null : token.replace(JWTUtil.prefix, "");
 		
-		Cookie cookie = new Cookie("jwtToken", realToken);
-		cookie.setHttpOnly(true);
-		cookie.setSecure(false);
-		cookie.setPath("/");
-		cookie.setMaxAge(timer);
+		ResponseCookie cookie = ResponseCookie.from("jwtToken", realToken)
+								.httpOnly(true)
+						.secure(true)
+						.path("/")
+						.sameSite("None")
+						.maxAge(timer).build();
 		return cookie;
 	}
 }

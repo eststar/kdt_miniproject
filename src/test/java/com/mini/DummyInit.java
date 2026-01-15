@@ -211,7 +211,7 @@ public class DummyInit{
 		}
 	}
 	
-	@Test
+//	@Test
 //	@Transactional
 	void loadExternalCommentJson() {
 		resetSeq("comment_comment", 1);
