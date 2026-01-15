@@ -3,6 +3,7 @@ package com.mini.config;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +40,8 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+	@Value("${ngrok-redirect.baseurl}")
+	private String ngrokRedirectURL;
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -64,7 +67,7 @@ public class SecurityConfig {
 		
 		
 		http.authorizeHttpRequests(auth->auth
-										.requestMatchers(AUTH_LIST).hasAnyRole("MEMBER", "ADMIN")										
+										.requestMatchers(AUTH_LIST).hasRole("MEMBER") /*hasAnyRole("MEMBER", "ADMIN")*/										
 										.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
 							.anyRequest().permitAll()); //현재 임시로 전체 가능하게
 		
@@ -81,7 +84,7 @@ public class SecurityConfig {
 	//CORS 설정 
 	private CorsConfigurationSource corsSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000","https://localhost:3000" , "http://127.0.0.1:3000", "https://127.0.0.1:3000", "http://10.125.121.182:3000", "https://10.125.121.182:3000", "https://webfront-ashen.vercel.app"));
+		config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000","https://localhost:3000" , "http://127.0.0.1:3000", "https://127.0.0.1:3000", "http://10.125.121.182:3000", "https://10.125.121.182:3000", "https://webfront-ashen.vercel.app", ngrokRedirectURL));
 		config.addAllowedMethod(CorsConfiguration.ALL);
 		config.addAllowedHeader(CorsConfiguration.ALL);
 		config.setAllowCredentials(true);
