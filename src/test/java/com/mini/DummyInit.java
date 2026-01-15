@@ -138,7 +138,7 @@ public class DummyInit{
 			
 //			int cnt = 0;
 			for(Map<String, Object> map : dataList) {
-				Long reviewId = Long.parseLong(Integer.toString((Integer)map.get("id")));                   
+//				Long reviewId = Long.parseLong(Integer.toString((Integer)map.get("id")));                   
 				String nickname = (String)map.get("user");
 				Members member = nickMemMap.get(nickname);
 				if(member == null)

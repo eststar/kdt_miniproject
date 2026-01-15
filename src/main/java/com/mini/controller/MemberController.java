@@ -13,7 +13,6 @@ import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.SecurityUser;
 import com.mini.dto.MemberDTO;
-import com.mini.dto.MemberReqDTO;
 import com.mini.service.MemberService;
 
 import lombok.RequiredArgsConstructor;

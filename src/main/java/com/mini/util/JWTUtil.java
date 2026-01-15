@@ -8,7 +8,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 
-import jakarta.servlet.http.Cookie;
 
 public class JWTUtil {
 	private static final Long ACCESS_TOKEN_MSEC = 6L*60*(60*1000);

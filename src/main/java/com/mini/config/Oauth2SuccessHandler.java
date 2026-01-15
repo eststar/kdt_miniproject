@@ -47,24 +47,47 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
 		response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 		
-		String savedTarget = (String) request.getSession().getAttribute("FINAL_TARGET");
 		
-		String host = request.getServerName(); 
-	    String scheme = request.getScheme();
-	    String dynamicBase = (host.contains("ngrok")) ? frontURL : scheme + "://" + host;
-		
-		String targetURL = dynamicBase+"/main"; 
-		
-		if (savedTarget != null) {
-	        System.out.println("세션에서 꺼낸 주소: " + savedTarget);
-	        targetURL = savedTarget.startsWith("http") ? savedTarget : dynamicBase + savedTarget;
-	        // 사용 후 세션에서 삭제 (선택)
-	        request.getSession().removeAttribute("FINAL_TARGET");
-	    } else {
-	        System.out.println("여전히 null인데 (세션 자체가 새로 생성됨)");
-	    }
+		String origin = request.getHeader("Origin");
+		if (origin == null)
+			origin = request.getHeader("Referer");
 
-	    System.out.println("최종 리다이렉트: " + targetURL);
+		String dynamicBase = frontURL;
+		if (origin != null && (origin.contains("localhost") || origin.contains("127.0.0.1")
+				|| origin.matches(".*10\\.\\d+\\.\\d+\\.\\d+.*")))
+			dynamicBase = origin.replaceAll("^(https?://[^/]+).*$", "$1");
+		
+		String savedTarget = (String) request.getSession().getAttribute("FINAL_TARGET");
+		String targetURL = dynamicBase+"/main"; 
+
+		if (savedTarget != null && !savedTarget.isEmpty()) {
+	        System.out.println(">>> [성공] 세션에서 꺼낸 주소: " + savedTarget);
+	        if (savedTarget.startsWith("/"))
+	            targetURL = dynamicBase + savedTarget;
+	        else
+	            targetURL = savedTarget; // http... 로 시작하는 전체 주소면 그대로 사용
+	        
+	        request.getSession().removeAttribute("FINAL_TARGET");
+	    } 
+	    else
+	    	targetURL = dynamicBase + "/main";
+		
+//		String host = request.getServerName(); 
+//	    String scheme = request.getScheme();
+//	    String dynamicBase = (host.contains("ngrok")) ? frontURL : scheme + "://" + host;
+//		
+//		String targetURL = dynamicBase+"/main"; 
+//		
+//		if (savedTarget != null) {
+//	        System.out.println("세션에서 꺼낸 주소: " + savedTarget);
+//	        targetURL = savedTarget.startsWith("http") ? savedTarget : dynamicBase + savedTarget;
+//	        // 사용 후 세션에서 삭제 (선택)
+//	        request.getSession().removeAttribute("FINAL_TARGET");
+//	    } else {
+//	        System.out.println("여전히 null인데 (세션 자체가 새로 생성됨)");
+//	    }
+//
+//	    System.out.println("최종 리다이렉트: " + targetURL);
 						
 	    System.out.println("=== 리다이렉트 주소 ===:"+targetURL);
 		getRedirectStrategy().sendRedirect(request, response, targetURL);

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
@@ -30,15 +29,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mini.config.filter.JWTAuthenticationFilter;
 import com.mini.config.filter.JWTAuthorizationFilter;
-import com.mini.domain.AuthErrorCode;
-import com.mini.dto.ErrorRespDTO;
 import com.mini.persistence.MemberRepository;
 import com.mini.util.JWTUtil;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -90,10 +85,10 @@ public class SecurityConfig {
 		http.addFilterBefore(new JWTAuthorizationFilter(memRepo), AuthorizationFilter.class); //인가처리 필터
 		http.addFilter(new JWTAuthenticationFilter(authenticationConfig.getAuthenticationManager())); //인증처리 필터
 		http.oauth2Login(oauth2->oauth2
-						.loginPage(frontURL+"/login")
+				/* .loginPage(frontURL+"/login") */
 						.authorizationEndpoint(auth -> auth
-                		.authorizationRequestResolver(customAuthorizationRequestResolver(clientRegistrationRepository)))
-								.successHandler(oauth2SuccessHandler));
+										.authorizationRequestResolver(customAuthorizationRequestResolver(clientRegistrationRepository)))
+										.successHandler(oauth2SuccessHandler));
 		http.logout(logout->logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler())); //로그아웃 처리
 		http.exceptionHandling(conf->conf.authenticationEntryPoint((request, response, authException)->authFailHandler(request, response, authException)));
 		return http.build();

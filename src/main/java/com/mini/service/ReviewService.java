@@ -22,7 +22,6 @@ import com.mini.persistence.MemberRepository;
 import com.mini.persistence.ReviewRepository;
 import com.mini.persistence.ToiletInfoRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.mini.domain.Members;
-import com.mini.domain.Provider;
 import com.mini.domain.SecurityUser;
 import com.mini.persistence.MemberRepository;
 

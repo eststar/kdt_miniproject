@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.mini.domain.Board;
 import com.mini.domain.Members;
-import com.mini.dto.BoardDetailRespDTO;
 import com.mini.dto.BoardReqDTO;
 import com.mini.dto.BoardRespDTO;
 import com.mini.dto.MemberDTO;
@@ -21,7 +20,6 @@ import com.mini.persistence.BoardRepository;
 import com.mini.persistence.CommentRepository;
 import com.mini.persistence.MemberRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
