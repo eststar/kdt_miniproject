@@ -90,15 +90,12 @@ public class MemberService {
 		
 		Members targetMember = memRepo.findById(memberId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"멤버 없음"));
 		
-		if(targetMember.getProvider() != Provider.LOCAL) {
+		if(targetMember.getProvider() == Provider.LOCAL) {
 			//비번 체크 
 			if(!encoder.matches(reqDTO.getPassword(), targetMember.getPassword()))
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 틀립니다.");
 			
-			if(!reqDTO.getNewPassword().equals(reqDTO.getNewPasswordConfirm()))
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호 확인이 다릅니다.");
-			else
-				targetMember.setPassword(encoder.encode(reqDTO.getNewPassword()));
+			targetMember.setPassword(encoder.encode(reqDTO.getNewPassword()));
 		}
 		
 		if(!reqDTO.getNickname().equals(targetMember.getNickname()))

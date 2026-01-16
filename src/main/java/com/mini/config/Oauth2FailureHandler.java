@@ -29,7 +29,7 @@ public class Oauth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
 		String origin = request.getHeader("Origin");
         if (origin == null) origin = request.getHeader("Referer");
 
-        String dynamicBase = frontURL; // 기본값
+        String dynamicBase = frontTestURL; // 기본값
         if (origin != null && (origin.contains("localhost") || origin.contains("127.0.0.1") || origin.matches(".*10\\.\\d+\\.\\d+\\.\\d+.*")))
             dynamicBase = origin.replaceAll("^(https?://[^/]+).*$", "$1");
         

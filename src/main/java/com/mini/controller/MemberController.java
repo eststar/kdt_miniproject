@@ -1,6 +1,8 @@
 package com.mini.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.mini.domain.Members;
 import com.mini.domain.Provider;
 import com.mini.domain.SecurityUser;
@@ -18,6 +19,7 @@ import com.mini.dto.MemberDTO;
 import com.mini.dto.MemberDeleteDTO;
 import com.mini.dto.MemberReqDTO;
 import com.mini.service.MemberService;
+import com.mini.util.JWTUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
+
 	private final MemberService memService;
 	
 	@GetMapping("/myinfo")
@@ -52,6 +55,8 @@ public class MemberController {
 	
 	@DeleteMapping("/signout")
 	public ResponseEntity<Void> deleteMember(@RequestBody MemberDeleteDTO delDTO, @AuthenticationPrincipal SecurityUser userInfo){
-		return ResponseEntity.noContent().build();
+		memService.deleteMember(delDTO, userInfo.getMemberId());
+		ResponseCookie deleteCookie = JWTUtil.makeJWTTokenCookie("", 0);
+		return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, deleteCookie.toString()).build();
 	}
 }

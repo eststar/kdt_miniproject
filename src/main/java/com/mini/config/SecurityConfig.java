@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -80,9 +82,9 @@ public class SecurityConfig {
 										.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
 							.anyRequest().permitAll()); //현재 임시로 전체 가능하게
 		
-		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		
-		http.addFilterBefore(new JWTAuthorizationFilter(memRepo), AuthorizationFilter.class); //인가처리 필터
+		http.addFilterBefore(new JWTAuthorizationFilter(memRepo), UsernamePasswordAuthenticationFilter.class); //인가처리 필터
 		http.addFilter(new JWTAuthenticationFilter(authenticationConfig.getAuthenticationManager())); //인증처리 필터
 		http.oauth2Login(oauth2->oauth2
 				/* .loginPage(frontURL+"/login") */
@@ -97,11 +99,20 @@ public class SecurityConfig {
 	//CORS 설정 
 	private CorsConfigurationSource corsSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000","https://localhost:3000" , "http://127.0.0.1:3000", "https://127.0.0.1:3000", "http://10.125.121.182:3000", "https://10.125.121.182:3000", "https://webfront-ashen.vercel.app", ngrokRedirectURL));
+		config.setAllowedOriginPatterns(Arrays.asList(
+					"http://localhost:3000",
+					"https://localhost:3000", 
+					"http://127.0.0.1:3000", 
+					"https://127.0.0.1:3000", 
+					"http://10.125.121.182:3000", 
+					"https://10.125.121.182:3000", 
+					"https://webfront-ashen.vercel.app", 
+					ngrokRedirectURL));
 		config.addAllowedMethod(CorsConfiguration.ALL);
 		config.addAllowedHeader(CorsConfiguration.ALL);
 		config.setAllowCredentials(true);
 		config.addExposedHeader(HttpHeaders.AUTHORIZATION);
+		config.addExposedHeader(HttpHeaders.SET_COOKIE);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);
 		return source;
@@ -112,7 +123,7 @@ public class SecurityConfig {
 		return (request, response, authentication)->{
 			ResponseCookie cookie = JWTUtil.makeJWTTokenCookie("", 0); //cookie 유효시간 0으로
 			response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());		
-			
+			SecurityContextHolder.clearContext();
 			response.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("=== 로그아웃 처리 완료 (200 OK) ===");
 		};

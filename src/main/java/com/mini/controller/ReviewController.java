@@ -51,6 +51,12 @@ public class ReviewController {
 	
 	@DeleteMapping("/deletereview/{reviewId}")
 	public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @AuthenticationPrincipal SecurityUser userInfo){
+		System.out.println("===삭제 확인");
 		return ResponseEntity.status(HttpStatus.OK).body(Map.of("reviewId", reviewService.deleteReview(reviewId, MemberDTO.builder().memberId(userInfo.getMemberId()).build(), userInfo.isAdmin())));
 	}
+	
+//	@GetMapping("/getmostcnttoilet")
+//	public ResponseEntity<?> getMostCntToilet(){
+//		
+//	}
 }

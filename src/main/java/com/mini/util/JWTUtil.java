@@ -60,8 +60,10 @@ public class JWTUtil {
 		ResponseCookie cookie = ResponseCookie.from("jwtToken", realToken)
 								.httpOnly(true)
 						.secure(true)
+//								.secure(false)
 						.path("/")
 						.sameSite("None")
+//						.sameSite("Lax")
 						.maxAge(timer).build();
 		return cookie;
 	}

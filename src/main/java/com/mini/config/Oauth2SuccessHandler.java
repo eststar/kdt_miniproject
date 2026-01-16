@@ -45,14 +45,14 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		
 		String token = JWTUtil.getJWT(memdto.getMemberId());
 		ResponseCookie cookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12);
-		response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+		response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 		
 		
 		String origin = request.getHeader("Origin");
 		if (origin == null)
 			origin = request.getHeader("Referer");
 
-		String dynamicBase = frontURL;
+		String dynamicBase = frontTestUrl;
 		if (origin != null && (origin.contains("localhost") || origin.contains("127.0.0.1")
 				|| origin.matches(".*10\\.\\d+\\.\\d+\\.\\d+.*")))
 			dynamicBase = origin.replaceAll("^(https?://[^/]+).*$", "$1");
@@ -72,22 +72,11 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	    else
 	    	targetURL = dynamicBase + "/main";
 		
-//		String host = request.getServerName(); 
-//	    String scheme = request.getScheme();
-//	    String dynamicBase = (host.contains("ngrok")) ? frontURL : scheme + "://" + host;
-//		
-//		String targetURL = dynamicBase+"/main"; 
-//		
-//		if (savedTarget != null) {
-//	        System.out.println("세션에서 꺼낸 주소: " + savedTarget);
-//	        targetURL = savedTarget.startsWith("http") ? savedTarget : dynamicBase + savedTarget;
-//	        // 사용 후 세션에서 삭제 (선택)
-//	        request.getSession().removeAttribute("FINAL_TARGET");
-//	    } else {
-//	        System.out.println("여전히 null인데 (세션 자체가 새로 생성됨)");
-//	    }
-//
-//	    System.out.println("최종 리다이렉트: " + targetURL);
+		if (targetURL.contains("?")) {
+		    targetURL += "&loginSuccess=true";
+		} else {
+		    targetURL += "?loginSuccess=true";
+		}
 						
 	    System.out.println("=== 리다이렉트 주소 ===:"+targetURL);
 		getRedirectStrategy().sendRedirect(request, response, targetURL);

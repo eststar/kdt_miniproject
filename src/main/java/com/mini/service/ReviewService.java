@@ -85,6 +85,7 @@ public class ReviewService {
 	
 	@Transactional
 	public Long deleteReview(Long reviewId, MemberDTO memberdto, Boolean isAdmin) {
+		
 		Reviews targetReview = reviewRepo.findById(reviewId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없음"));
 		Long targetReviewId = targetReview.getReviewId();
 		if(!targetReview.getMember().getMemberId().equals(memberdto.getMemberId()) && !isAdmin)

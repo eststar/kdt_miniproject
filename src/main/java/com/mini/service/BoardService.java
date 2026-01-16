@@ -64,7 +64,7 @@ public class BoardService {
 	
 	public BoardRespDTO postBoard(BoardReqDTO boardReq, MemberDTO memberDTO) {
 		Members currentMember =  memRepo.getReferenceById(memberDTO.getMemberId());
-		
+		System.out.println("oauth2 게시글 테스트");
 		Board targetB = bRepo.save(Board.builder()
 										.title(boardReq.getTitle())
 										.content(boardReq.getContent())
