@@ -28,11 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 	private final CommentService cService;
 	
-//	@GetMapping("/getcomment")
-//	public ResponseEntity<?> getAllCommentWithMember(@ModelAttribute CommentReqDTO commentReq){
-//		return ResponseEntity.ok(cService.getAllWithMember(commentReq));
-//	}
-	
 	@GetMapping("/{boardId}/all")
 	public ResponseEntity<?> getCommentAllWithMember(@PathVariable Long boardId){
 		return ResponseEntity.ok(cService.getCommentAllWithMember(boardId));

@@ -25,8 +25,8 @@ public class MemberDTO {
 	private String 			memberId;    //provider_username
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 	private OffsetDateTime 	createDate;  //생성일
-	@Builder.Default
-	private Long 			tpCnt = 0L;       //휴지배달개수
+//	@Builder.Default
+//	private Long 			tpCnt = 0L;       //휴지배달개수
 	private Role			role;        //권한
 	private String 			nickname;	 //닉네임
 	private Provider 		provider;   //로그인방식
@@ -38,7 +38,7 @@ public class MemberDTO {
 				.nickname(member.getNickname())
 				.username(member.getUsername())
 				.createDate(member.getCreateDate())
-				.tpCnt(member.getTpCnt())
+//				.tpCnt(member.getTpCnt())
 				.role(member.getRole())
 				.provider(member.getProvider())
 				.enabled(member.getEnabled())

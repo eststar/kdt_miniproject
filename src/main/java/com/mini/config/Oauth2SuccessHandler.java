@@ -53,6 +53,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 			origin = request.getHeader("Referer");
 
 		String dynamicBase = frontTestUrl;
+		//프론트주소 판단 : 로컬 ip localhost의 경우
 		if (origin != null && (origin.contains("localhost") || origin.contains("127.0.0.1")
 				|| origin.matches(".*10\\.\\d+\\.\\d+\\.\\d+.*")))
 			dynamicBase = origin.replaceAll("^(https?://[^/]+).*$", "$1");

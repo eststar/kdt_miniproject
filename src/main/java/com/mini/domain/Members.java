@@ -30,8 +30,8 @@ public class Members {
 	@Builder.Default
 	@Column(columnDefinition = "TIMESTAMPTZ DEFAULT NOW()")
 	private OffsetDateTime 	createDate = OffsetDateTime.now();  //3생성일
-	@Builder.Default
-	private Long 			tpCnt = 0L;  //4휴지배달개수
+//	@Builder.Default
+//	private Long 			tpCnt = 0L;  //4휴지배달개수
 	@Column(columnDefinition = "TEXT")
 	private String 			password;    //5비밀번호
 	@Enumerated(EnumType.STRING)

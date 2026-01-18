@@ -67,9 +67,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		//response header에 json을 보내는 대신 쿠키 전달
 		ResponseCookie jwtCookie = JWTUtil.makeJWTTokenCookie(token, 60*60*12); //1시간
-//		response.addHeader("Set-Cookie", jwtCookie.toString());
 		response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-//		response.addCookie(jwtCookie);
 		
 		response.setStatus(HttpStatus.OK.value());
 		System.out.println("success:[JWTAuthFilter] " + user);
