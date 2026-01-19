@@ -43,8 +43,8 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-	@Value("${ngrok-redirect.baseurl}")
-	private String ngrokRedirectURL;
+//	@Value("${ngrok-redirect.baseurl}")
+//	private String ngrokRedirectURL;
 	
 	@Value("${app.frontend.url}")
 	private String frontTestUrl;
@@ -106,8 +106,8 @@ public class SecurityConfig {
 					"https://127.0.0.1:3000", 
 					"http://10.125.121.182:3000", 
 					"https://10.125.121.182:3000", 
-					"https://webfront-ashen.vercel.app", 
-					ngrokRedirectURL));
+				"https://webfront-ashen.vercel.app"/* , */
+					/*ngrokRedirectURL*/));
 		config.addAllowedMethod(CorsConfiguration.ALL);
 		config.addAllowedHeader(CorsConfiguration.ALL);
 		config.setAllowCredentials(true);
