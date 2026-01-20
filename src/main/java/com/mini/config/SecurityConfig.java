@@ -80,6 +80,10 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(auth->auth
 										.requestMatchers(AUTH_LIST).hasRole("MEMBER") /*hasAnyRole("MEMBER", "ADMIN")*/										
 										.requestMatchers("/login_page/**", "/login/**", "/logout/**").permitAll()
+										.requestMatchers(
+						                        "/v3/api-docs/**",
+						                        "/swagger-ui/**",
+						                        "/swagger-ui.html").permitAll()
 							.anyRequest().permitAll()); //현재 임시로 전체 가능하게
 		
 		http.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
