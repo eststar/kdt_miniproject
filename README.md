@@ -1,6 +1,9 @@
 # MiniProject
 
-공중 화장실 정보 제공 및 커뮤니티 기능을 갖춘 웹 애플리케이션입니다.
+공중 화장실 정보 제공 및 커뮤니티 기능을 갖춘 웹 애플리케이션의 백엔드 시스템입니다.
+
+> [!TIP]
+> 상세한 프로젝트 구조와 분석 내용은 [PROJECT_ANALYSIS_REPORT.md](./PROJECT_ANALYSIS_REPORT.md)에서 확인하실 수 있습니다.
 
 ## Features
 
