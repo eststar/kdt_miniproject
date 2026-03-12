@@ -4,7 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/Java-21-blue?style=flat&logo=openjdk)
 ![Static Badge](https://img.shields.io/badge/PostgreSQL-Supabase-blue?style=flat&logo=postgresql)
 
-**공용 화장실 정보 제공 및 커뮤니티 플랫폼** 백엔드 애플리케이션입니다. 
+**제주시 공공화장실 정보 제공 및 커뮤니티 플랫폼** 백엔드 애플리케이션입니다. 
 
 공용 화장실의 개방 시간, 장소 시설(기저귀 교환대, 장애인용 여부 등) 상세 데이터를 클라이언트에 제공하며, 이와 연계된 자체 커뮤니티 게시판과 리뷰 엔드포인트를 통해 소통과 평가 기능이 가능하도록 설계되었습니다.
 
