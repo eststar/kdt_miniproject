@@ -147,3 +147,12 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,maven,eclipse
+
+### Security / Properties ###
+*.properties
+.env
+.env.*
+application*.yml
+application*.yaml
+application*.properties
+minioauth2.properties
